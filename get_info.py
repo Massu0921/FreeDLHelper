@@ -31,7 +31,7 @@ class SoundCloud():
         tag = tag.split('"tag_list":')
         tag = tag[1].split(',')
         #ここがうまくできない
-        self.subtag = tag[0].replace('\\"',' ').replace('  ','#').replace('"','#')
+        self.subtag = tag[0]
 
         # アップロード日時取得
         self.uploaded = root.xpath('string(//time)')
