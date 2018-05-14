@@ -35,9 +35,9 @@ class SoundCloud():
 
         #ここがうまくできない
         # "\ を $ に置き換え
-        tag = tag[0].replace('\\"','$')
+        tag = tag[0].replace('\\"','$').replace('$ ','$~')
         # 正規表現で空白入りのタグを抽出
-        space_in = regex.findall('\$[\w\s\p]+\$',tag)  #記号未対応
+        space_in = regex.findall('\$[\w\s\p!-/]+\$~',tag)  #記号未対応
         print(space_in)
         self.subtag = tag
 
