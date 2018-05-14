@@ -41,7 +41,7 @@ class SoundCloud():
         self.comment = root.xpath('string(//meta[@property="og:description"]/@content)')
 
         # アートワークURLを取得
-        self.img_url = root.xpath('normalize-space(//img/@src)')
+        self.img_url = root.xpath('normalize-space(//meta[@property="og:image"]/@content)')
 
 
     def output(self):
