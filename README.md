@@ -2,12 +2,12 @@
 SoundCloud上のトラックの情報を取得します。
 
 # 使用モジュール
-- os
-- requests
+## os
+## requests
 `pip3 install requests`
-- lxml.html
+## lxml
 `pip3 install lxml`
-- regex
+## regex
 `pip3 install regex`
 
 # 文字化け対処
