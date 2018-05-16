@@ -14,6 +14,7 @@ class SoundCloud():
         # 対象曲のurl入力
         self.trg_url = input('URL: ')
 
+    # トラック情報取得
     def getinfo(self):
         # html取得
         trg_html = requests.get(self.trg_url).text
@@ -26,25 +27,11 @@ class SoundCloud():
         self.artist = root.xpath('string(//div[@itemprop="byArtist"]/meta/@content)')
 
         # メインタグを取得
-        self.maintag = root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/','')
+        self.maintag = '#' + root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/','')
 
         #サブタグを取得
         tag = root.xpath('string(//script[8])')
-        tag = tag.split('"tag_list":')
-        tag = tag[1].split(',')
-
-        #ここがうまくできない
-        # "\ を $ に置き換え
-        tag = tag[0].replace('\\"','$').replace('$ ','$~')
-        # 正規表現で空白入りのタグを抽出
-        space_tag = ''
-        space_in = regex.findall('\$[\w\s\p!-/]+\$~',tag)  #記号未対応
-        for i in range(len(space_in)):
-            tag = tag.replace(space_in[i],'')
-            space_tag += ' #' + space_in[i].replace('$','').replace('~','')
-
-        tag = tag.replace('"','').replace(' ',' #')
-        self.subtag = '#' + tag + space_tag
+        self.subtag = self.get_subtag(tag)
 
         # アップロード日時取得
         self.uploaded = root.xpath('string(//time)')
@@ -56,6 +43,23 @@ class SoundCloud():
         # アートワークURLを取得
         self.img_url = root.xpath('normalize-space(//meta[@property="og:image"]/@content)')
 
+    # サブタグ整理用関数
+    def get_subtag(self,tag):
+        tag = tag.split('"tag_list":')
+        tag = tag[1].split(',')
+
+        # "\ を $ に置き換え
+        tag = tag[0].replace('\\"','$').replace('$ ','$~')
+
+        # 正規表現で空白入りのタグを抽出
+        space_tag = ''
+        space_in = regex.findall('\$[\w\s\p!-/]+\$~',tag)  #記号対応した
+        for i in range(len(space_in)):
+            tag = tag.replace(space_in[i],'')
+            space_tag += ' #' + space_in[i].replace('$','').replace('~','')
+
+        tag = tag.replace('"','').replace(' ',' #')
+        return '#' + tag + space_tag
 
     def output(self):
         self.getinfo()
