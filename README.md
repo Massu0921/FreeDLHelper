@@ -11,4 +11,7 @@ SoundCloud上のトラックの情報を取得します。
 `pip3 install regex`
 
 # 文字化け対処
-bytes('対象文字列','iso-8859-1').decode('utf-8') で対処
+以下の構文で対処
+~~~python
+bytes('対象文字列','iso-8859-1').decode('utf-8')
+~~~
