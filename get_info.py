@@ -37,9 +37,14 @@ class SoundCloud():
         # "\ を $ に置き換え
         tag = tag[0].replace('\\"','$').replace('$ ','$~')
         # 正規表現で空白入りのタグを抽出
+        space_tag = ''
         space_in = regex.findall('\$[\w\s\p!-/]+\$~',tag)  #記号未対応
-        print(space_in)
-        self.subtag = tag
+        for i in range(len(space_in)):
+            tag = tag.replace(space_in[i],'')
+            space_tag += ' #' + space_in[i].replace('$','').replace('~','')
+
+        tag = tag.replace('"','').replace(' ',' #')
+        self.subtag = '#' + tag + space_tag
 
         # アップロード日時取得
         self.uploaded = root.xpath('string(//time)')
