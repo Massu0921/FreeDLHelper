@@ -31,7 +31,7 @@ class SoundCloud():
 
         #サブタグを取得
         tag = root.xpath('string(//script[8])')
-        self.subtag = self.get_subtag(tag)
+        self.subtag = self.org_subtag(tag)
 
         # アップロード日時取得
         self.uploaded = root.xpath('string(//time)')
