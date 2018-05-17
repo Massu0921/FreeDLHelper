@@ -44,7 +44,7 @@ class SoundCloud():
         self.img_url = root.xpath('normalize-space(//meta[@property="og:image"]/@content)')
 
     # サブタグ整理用関数
-    def get_subtag(self,tag):
+    def org_subtag(self,tag):
         tag = tag.split('"tag_list":')
         tag = tag[1].split(',')
 
@@ -68,7 +68,7 @@ class SoundCloud():
         print("メインタグ：" + self.maintag)
         print("サブタグ：" + self.subtag)
         print("アップロード日時：" + self.uploaded)
-        print("コメント：\n" + self.comment)
+        print("概要：\n" + self.comment)
         print("アートワーク：" + self.img_url)
 
 if __name__ == '__main__':
