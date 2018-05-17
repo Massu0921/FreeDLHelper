@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding: utf-8
-import requests,os
+import requests,os,regex
 import lxml.html
 
 class SoundCloud():
@@ -14,9 +14,12 @@ class SoundCloud():
         # 対象曲のurl入力
         self.trg_url = input('URL: ')
 
+    # トラック情報取得
     def getinfo(self):
         # html取得
         trg_html = requests.get(self.trg_url).text
+        # 日本語が文字化けするので、ここでデコード
+        trg_html = bytes(trg_html,'iso-8859-1').decode('utf-8')
         root = lxml.html.fromstring(trg_html)
 
         # タイトル・アーティスト名取得
@@ -24,14 +27,11 @@ class SoundCloud():
         self.artist = root.xpath('string(//div[@itemprop="byArtist"]/meta/@content)')
 
         # メインタグを取得
-        self.maintag = root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/','')
+        self.maintag = '#' + root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/','')
 
         #サブタグを取得
         tag = root.xpath('string(//script[8])')
-        tag = tag.split('"tag_list":')
-        tag = tag[1].split(',')
-        #ここがうまくできない
-        self.subtag = tag[0]
+        self.subtag = self.org_subtag(tag)
 
         # アップロード日時取得
         self.uploaded = root.xpath('string(//time)')
@@ -43,6 +43,23 @@ class SoundCloud():
         # アートワークURLを取得
         self.img_url = root.xpath('normalize-space(//meta[@property="og:image"]/@content)')
 
+    # サブタグ整理用関数
+    def org_subtag(self,tag):
+        tag = tag.split('"tag_list":')
+        tag = tag[1].split(',')
+
+        # "\ を $ に置き換え
+        tag = tag[0].replace('\\"','$').replace('$ ','$~')
+
+        # 正規表現で空白入りのタグを抽出
+        space_tag = ''
+        space_in = regex.findall('\$[\w\s\p!-/]+\$~',tag)  #記号対応した
+        for i in range(len(space_in)):
+            tag = tag.replace(space_in[i],'')
+            space_tag += ' #' + space_in[i].replace('$','').replace('~','')
+
+        tag = tag.replace('"','').replace(' ',' #')
+        return '#' + tag + space_tag
 
     def output(self):
         self.getinfo()
@@ -51,7 +68,7 @@ class SoundCloud():
         print("メインタグ：" + self.maintag)
         print("サブタグ：" + self.subtag)
         print("アップロード日時：" + self.uploaded)
-        print("コメント：\n" + self.comment)
+        print("概要：\n" + self.comment)
         print("アートワーク：" + self.img_url)
 
 if __name__ == '__main__':
