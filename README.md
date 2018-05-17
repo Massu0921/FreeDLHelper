@@ -1,5 +1,6 @@
 # SC-trackinfo
 SoundCloud上のトラックの情報を取得します。
+Python3.6.0で動作確認
 
 # 使用モジュール
 ## os
