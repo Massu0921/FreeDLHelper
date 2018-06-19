@@ -70,6 +70,7 @@ class SoundCloud():
         tag = tag.replace('"','').replace(' ',' #')
         return '#' + tag + space_tag
 
+    # 出力
     def output(self):
         self.get_html()
         print("タイトル：" + self.get_title())
