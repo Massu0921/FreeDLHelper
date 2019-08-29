@@ -35,8 +35,8 @@ class SoundCloud():
         return '#' + self.root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/','')
 
     # サブタグを取得
-    def get_subtag():
-        tag = root.xpath('string(//script[8])')
+    def get_subtag(self):
+        tag = self.root.xpath('string(//script[8])')
         return self.org_subtag(tag)
 
     # アップロード日時取得
@@ -62,7 +62,7 @@ class SoundCloud():
 
         # 正規表現で空白入りのタグを抽出
         space_tag = ''
-        space_in = regex.findall('\$[\w\s\p!-/]+\$~',tag)  #記号対応した
+        space_in = regex.findall('\$[\w\s\p!-/]+\$~',tag)  # 記号対応
         for i in range(len(space_in)):
             tag = tag.replace(space_in[i],'')
             space_tag += ' #' + space_in[i].replace('$','').replace('~','')
