@@ -1,18 +1,14 @@
-# SC-trackinfo
-SoundCloud上のトラックの情報を取得します。
-Python3.6.0で動作確認
+# FreeDLHelper
+SoundCloudから楽曲情報・アートワーク画像を取得し、Free DLなどした音声ファイルに不足情報を追加するツールです。\
+まだ使えないので注意～\
+Windows10 Python 3.7.4にて動作確認 
 
-# 使用モジュール
-## os
+# インストールが必要なモジュール
 ## requests
-`pip3 install requests`
+`py -m pip install requests`
 ## lxml
-`pip3 install lxml`
+`py -m pip install lxml`
 ## regex
-`pip3 install regex`
-
-# 文字化け対処
-以下の構文で対処
-~~~python
-bytes('対象文字列','iso-8859-1').decode('utf-8')
-~~~
+`py -m pip install regex`
+## mutagen
+`py -m pip install mutagen`
