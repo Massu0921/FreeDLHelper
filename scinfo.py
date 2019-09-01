@@ -4,7 +4,7 @@ import requests,os,regex,time
 import lxml.html
 
 class SoundCloudInfo():
-    def __init__(self, URL=input('対象曲のURL: ')):  # 対象曲のurl入力 (引数)
+    def __init__(self, URL):  # 対象曲のurl入力 (引数)
         # url設定
         self.trg_url = URL
         # html取得
@@ -65,5 +65,5 @@ class SoundCloudInfo():
         print("概要：\n{}".format(self.comment))
 
 if __name__ == '__main__':
-    scinfo = SoundCloudInfo()
+    scinfo = SoundCloudInfo(input('対象曲のURL: '))
     scinfo.output()
