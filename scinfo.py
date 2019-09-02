@@ -4,7 +4,34 @@ import requests,os,regex,time
 import lxml.html
 
 class SoundCloudInfo():
-    def __init__(self, URL):  # 対象曲のurl入力 (引数)
+    """
+    SoundCloudから曲情報・アートワーク画像URLを取得する
+
+    Attributes
+    -----------
+    title : str
+        曲のタイトル
+    artist : str
+        アーティスト名
+    maintag : str
+        曲のメインタグ（ジャンル）
+    subtag : str
+        曲のタグリスト
+    uploaded : str
+        曲のアップロード日時
+    overview : str
+        曲の概要欄
+    artwork_url : str
+        SoundCloudのアートワーク画像のURL
+    """
+
+    def __init__(self, URL):
+        """
+        Parameters
+        ----------
+        URL : str
+            SoundCloud上の曲のURL
+        """
         # url設定
         self.trg_url = URL
         # html取得
@@ -31,13 +58,20 @@ class SoundCloudInfo():
         self.uploaded = uploaded[0:10]
 
         # 概要欄
-        self.comment = self.root.xpath('string(//meta[@property="og:description"]/@content)')
+        self.overview = self.root.xpath('string(//meta[@property="og:description"]/@content)')
 
         # アートワークURL
         self.artwork_url = self.root.xpath('normalize-space(//meta[@property="og:image"]/@content)')
 
-    # サブタグ整理用関数
     def org_subtag(self,tag):
+        """
+        タグリストの整理
+        
+        Parameters
+        ----------
+        tag : str
+            htmlから取得した文字列
+        """
         tag = tag.split('"tag_list":')
         tag = tag[1].split(',')
 
@@ -54,15 +88,15 @@ class SoundCloudInfo():
         tag = tag.replace('"','').replace(' ',' #')
         return '#' + tag + space_tag
 
-    # 出力
     def output(self):
+        """ テスト出力用 """
         print("タイトル：　　　　{}".format(self.title))
         print("アーティスト：　　{}".format(self.artist))
         print("メインタグ：　　　{}".format(self.maintag))
         print("サブタグ：　　　　{}".format(self.subtag))
         print("アップロード日時：{}".format(self.uploaded))
         print("アートワーク：　　{}".format(self.artwork_url))
-        print("概要：\n{}".format(self.comment))
+        print("概要：\n{}".format(self.overview))
 
 if __name__ == '__main__':
     scinfo = SoundCloudInfo(input('対象曲のURL: '))

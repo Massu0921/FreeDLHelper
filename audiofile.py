@@ -4,7 +4,30 @@ from urllib.request import urlopen
 import io
 
 class AudioFile():
-    def __init__(self, filepath):   # filepath: 対象の楽曲ファイル
+    """
+    音声ファイルのID3タグを取得・編集する
+
+    Attributes
+    -----------
+    title : str
+        曲のタイトル
+    album : str
+        アルバム名
+    artist : str
+        アーティスト名
+    genre : str
+        ジャンル
+    artwork_url : str
+        SoundCloudのアートワーク画像のURL
+    """
+    
+    def __init__(self, filepath):
+        """
+        Parameters
+        ----------
+        filepath : str
+            音声ファイルのファイルパス
+        """
         # ID3読み込み
         self.tags = ID3(filepath)
 
@@ -25,8 +48,9 @@ class AudioFile():
         for self.artwork in artworks:
             pass
     
-    # ID3タグ書き込み用
     def edit(self):
+        """ ID3タグ書き込み用 """
+
         # ID3タグ書き換え encoding: UTF-16 with BOM (1)
         self.tags['TIT2'] = TIT2(encoding=1, text=self.title)
         self.tags['TALB'] = TALB(encoding=1, text=self.album)
@@ -54,8 +78,8 @@ class AudioFile():
         for self.artwork in artworks:
             pass
     
-    # テスト用
     def output(self):
+        """ テスト出力用 """
         print("タイトル　　　　　　　: {}".format(self.title))
         print("アルバム名　　　　　　: {}".format(self.album))
         print("アーティスト　　　　　: {}".format(self.artist))
