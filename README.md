@@ -3,12 +3,14 @@ SoundCloudから楽曲情報・アートワーク画像を取得し、Free DLな
 まだ使えないので注意～\
 Windows10 Python 3.7.4にて動作確認 
 
-# インストールが必要なモジュール
-## requests
+## インストールが必要なモジュール
+### requests
 `py -m pip install requests`
-## lxml
+### lxml
 `py -m pip install lxml`
-## regex
+### regex
 `py -m pip install regex`
-## mutagen
+### mutagen
 `py -m pip install mutagen`
+### wxPython
+`py -m pip install wxpython`
