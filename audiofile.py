@@ -1,4 +1,4 @@
-from mutagen import id3, aiff, flac, mp4
+from mutagen import id3, mp3, aiff, flac, mp4
 from urllib.request import urlopen
 from PIL import Image
 import io
@@ -39,6 +39,7 @@ class AudioFile():
         """
         self.filepath = filepath
         self.fileformat = os.path.splitext(self.filepath)[1]
+        self.tags = None
 
         self.title = ''
         self.album = ''
@@ -71,7 +72,11 @@ class AudioFile():
 
     def mp3info(self):
         """ MP3(ID3)の曲情報を取得 """
-        self.tags = id3.ID3(self.filepath)
+        self.tags = mp3.MP3(self.filepath).tags
+        # ID3タグが存在しない場合
+        if self.tags == None:
+            # 空のID3オブジェクトを作成
+            self.tags = id3.ID3()
         self.id3info()
 
     def aiffinfo(self):
@@ -107,7 +112,7 @@ class AudioFile():
         for artwork in artworks:    # 抽出
             pass
         if artwork:     # アートワーク画像が存在するか
-            self.artwork = artwork.data # type: bytes
+            self.artwork = artwork.data  # type: bytes
         else:
             self.artwork = None
 
@@ -134,10 +139,10 @@ class AudioFile():
             self.tags.delall('APIC')
 
         # 保存
-        self.tags.save()
+        self.tags.save(self.filepath)
 
         # アートワーク更新（表示用）
-        artworks = self.tags.getall('APIC') # list
+        artworks = self.tags.getall('APIC')  # list
         artwork = None
         for artwork in artworks:    # 抽出
             pass
