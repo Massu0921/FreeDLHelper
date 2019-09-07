@@ -86,7 +86,23 @@ class AudioFile():
 
     def flacinfo(self):
         """ FLACの曲情報を取得 """
-        pass
+        self.tags = flac.FLAC(self.filepath)
+
+        # 各項目取得
+        # キーが存在しなかった場合: 半角空白に置き換え
+        self.title = self.tags.get('TITLE', ' ')[0]
+        self.album = self.tags.get('ALBUM', ' ')[0]
+        self.artist = self.tags.get('ARTIST', ' ')[0]
+        self.genre = self.tags.get('GENRE', ' ')[0]
+
+        artworks = self.tags.pictures
+        artwork = None
+        for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
+            pass
+        if artwork:     # アートワーク画像が存在するか
+            self.artwork = artwork.data  # type: bytes
+        else:
+            self.artwork = None
 
     def mp4info(self):
         """ MP4(m4a)の曲情報を取得 """
