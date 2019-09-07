@@ -25,8 +25,9 @@ class AudioFile():
         ジャンル
     artwork_url : str
         アートワーク画像のURL
-    artwork : somecase
+    artwork : bytes or None
         アートワーク画像
+        画像が存在しない場合はNoneが代入される
     """
 
     def __init__(self, filepath):
@@ -42,7 +43,7 @@ class AudioFile():
         self.title = ''
         self.album = ''
         self.artist = ''
-        self.albumartist = ''
+        #self.albumartist = ''
         self.genre = ''
         self.artwork_url = ''
         self.artwork = None
@@ -100,10 +101,15 @@ class AudioFile():
         self.genre = str(self.tags.get('TCON', ''))
         # アートワーク画像のURL
         self.artwork_url = ''
-        # アートワーク(bytes, 表示用 最後に登録された画像のみ) self.artwork.data
-        artworks = self.tags.getall('APIC')
-        for self.artwork in artworks:
+        # アートワーク(bytes, 表示用 最後に登録された画像のみ) self.artwork
+        artworks = self.tags.getall('APIC')     # リスト取得
+        artwork = None
+        for artwork in artworks:    # 抽出
             pass
+        if artwork:     # アートワーク画像が存在するか
+            self.artwork = artwork.data # type: bytes
+        else:
+            self.artwork = None
 
     def id3edit(self):
         """ ID3タグを編集 """
@@ -131,9 +137,14 @@ class AudioFile():
         self.tags.save()
 
         # アートワーク更新（表示用）
-        artworks = self.tags.getall('APIC')
-        for self.artwork in artworks:
+        artworks = self.tags.getall('APIC') # list
+        artwork = None
+        for artwork in artworks:    # 抽出
             pass
+        if artwork:     # アートワーク画像が存在するか
+            self.artwork = artwork.data  # type: bytes
+        else:
+            self.artwork = None
 
     def flacedit(self):
         """ FLACの曲情報を編集 """
@@ -153,10 +164,10 @@ class AudioFile():
         print("ジャンル　　　　　　　: {}".format(self.genre))
 
         # アートワーク表示
-        try:
-            im = Image.open(io.BytesIO(self.artwork.data))
+        if self.artwork != None:
+            im = Image.open(io.BytesIO(self.artwork))
             im.show()
-        except:
+        else:
             print("アートワークなし")
 
 
