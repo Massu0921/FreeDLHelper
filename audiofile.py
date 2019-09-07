@@ -69,21 +69,25 @@ class AudioFile():
             exit()
 
     def mp3info(self):
+        """ MP3(ID3)の曲情報を取得 """
         self.tags = id3.ID3(self.filepath)
         self.id3info()
 
     def aiffinfo(self):
+        """ AIFFの曲情報を取得 """
         self.tags = aiff.AIFF(self.filepath).tags
         self.id3info()
 
     def flacinfo(self):
+        """ FLACの曲情報を取得 """
         pass
 
     def mp4info(self):
+        """ MP4(m4a)の曲情報を取得 """
         pass
 
     def id3info(self):
-        """ ID3タグ取得用 """
+        """ ID3タグを取得 """
         # タイトル
         self.title = str(self.tags.get('TIT2', ''))
         # アルバム名
@@ -102,7 +106,7 @@ class AudioFile():
             pass
 
     def id3edit(self):
-        """ ID3タグ書き込み用 """
+        """ ID3タグを編集 """
 
         # ID3タグ書き換え encoding: UTF-16 with BOM (1)
         self.tags['TIT2'] = id3.TIT2(encoding=1, text=self.title)
@@ -132,9 +136,11 @@ class AudioFile():
             pass
 
     def flacedit(self):
+        """ FLACの曲情報を編集 """
         pass
 
     def mp4edit(self):
+        """ MP4(m4a)の曲情報を編集 """
         pass
 
     def output(self):
