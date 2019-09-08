@@ -142,12 +142,12 @@ class AudioFile():
             # 画像読み込み
             artwork_read = urlopen(self.artwork_url).read()
 
+            # アートワーク初期化
+            self.tags.delall('APIC')
+
             # 画像設定
             self.tags['APIC'] = id3.APIC(
                 encoding=1, mime='image/jpeg', type=3, desc='Cover', data=artwork_read)
-
-            # アートワーク初期化
-            self.tags.delall('APIC')
 
         # 保存
         self.tags.save(self.filepath)
@@ -223,3 +223,4 @@ class AudioFile():
 if __name__ == "__main__":
     audiofile = AudioFile(input('対象ファイルパス: '))
     audiofile.output()
+    audiofile.id3edit()
