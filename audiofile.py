@@ -116,7 +116,7 @@ class AudioFile():
         self.artist = str(self.tags.get('TPE1', ''))
         #self.albumartist = str(self.tags.get('TPE2',''))
         self.genre = str(self.tags.get('TCON', ''))
-        
+
         # アートワーク(bytes, 表示用 最後に登録された画像のみ) self.artwork
         artworks = self.tags.getall('APIC')     # リスト取得
         artwork = None
@@ -164,7 +164,7 @@ class AudioFile():
 
     def flacedit(self):
         """ FLACの曲情報を編集 """
-        
+
         # タグ書き換え
         self.tags['TITLE'] = self.title
         self.tags['ALBUM'] = self.album
@@ -185,7 +185,7 @@ class AudioFile():
             self.tags.clear_pictures()
             # 画像設定
             self.tags.add_picture(pic)
-            
+
         # 保存
         self.tags.save(self.filepath)
 
@@ -223,4 +223,3 @@ class AudioFile():
 if __name__ == "__main__":
     audiofile = AudioFile(input('対象ファイルパス: '))
     audiofile.output()
-    audiofile.id3edit()
