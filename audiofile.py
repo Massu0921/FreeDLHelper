@@ -110,18 +110,13 @@ class AudioFile():
 
     def id3info(self):
         """ ID3タグを取得 """
-        # タイトル
+
         self.title = str(self.tags.get('TIT2', ''))
-        # アルバム名
         self.album = str(self.tags.get('TALB', ''))
-        # アーティスト
         self.artist = str(self.tags.get('TPE1', ''))
-        # アルバムのアーティスト
         #self.albumartist = str(self.tags.get('TPE2',''))
-        # ジャンル
         self.genre = str(self.tags.get('TCON', ''))
-        # アートワーク画像のURL
-        self.artwork_url = ''
+        
         # アートワーク(bytes, 表示用 最後に登録された画像のみ) self.artwork
         artworks = self.tags.getall('APIC')     # リスト取得
         artwork = None
