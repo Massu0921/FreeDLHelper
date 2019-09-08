@@ -169,7 +169,40 @@ class AudioFile():
 
     def flacedit(self):
         """ FLACの曲情報を編集 """
-        pass
+        
+        # タグ書き換え
+        self.tags['TITLE'] = self.title
+        self.tags['ALBUM'] = self.album
+        self.tags['ARTIST'] = self.artist
+        self.tags['GENRE'] = self.genre
+
+        # アートワーク書き換え
+        if not self.artwork_url == '':
+            # 画像読み込み
+            artwork_read = urlopen(self.artwork_url).read()
+            # 書き込み用画像オブジェクトを作成
+            pic = flac.Picture()
+            pic.data = artwork_read
+            pic.type = id3.PictureType.COVER_FRONT
+            pic.mine = 'image/jpeg'
+
+            # 画像消去
+            self.tags.clear_pictures()
+            # 画像設定
+            self.tags.add_picture(pic)
+            
+        # 保存
+        self.tags.save(self.filepath)
+
+        # 表示用アートワーク更新
+        artworks = self.tags.pictures
+        artwork = None
+        for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
+            pass
+        if artwork:     # アートワーク画像が存在するか
+            self.artwork = artwork.data  # type: bytes
+        else:
+            self.artwork = None
 
     def mp4edit(self):
         """ MP4(m4a)の曲情報を編集 """
