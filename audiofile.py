@@ -49,6 +49,13 @@ class AudioFile():
         self.artwork_url = ''
         self.artwork = None
 
+
+    def info(self):
+        """
+        曲情報を取得する\n
+        try - exceptを用いてこのメソッドを用いること\n
+        ファイルが発見できない、未対応フォーマットの場合、エラー送出
+        """
         # フォーマット判別
         # MP3
         if self.fileformat == '.mp3':
@@ -66,9 +73,11 @@ class AudioFile():
         # MP4(m4a)
         elif self.fileformat == '.m4a':
             self.mp4info()
+        # ファイルが未存在、未対応フォーマットの場合
         else:
-            print('未対応フォーマット')
-            exit()
+            # エラー送出
+            raise
+
 
     def mp3info(self):
         """ MP3(ID3)の曲情報を取得 """
@@ -123,7 +132,6 @@ class AudioFile():
                 pass
         self.artwork = artwork
 
-
     def id3info(self):
         """ ID3タグを取得 """
 
@@ -142,6 +150,35 @@ class AudioFile():
             self.artwork = artwork.data  # type: bytes
         else:
             self.artwork = None
+
+
+    def edit(self):
+        """
+        曲情報を編集する\n
+        try - exceptを用いてこのメソッドを用いること\n
+        ファイルが発見できない、未対応フォーマットの場合、エラー送出
+        """
+        # フォーマット判別
+        # MP3
+        if self.fileformat == '.mp3':
+            self.id3edit()
+        # AIFF
+        elif self.fileformat == '.aiff' \
+                or self.fileformat == '.aif' \
+                or self.fileformat == '.aifc'\
+                or self.fileformat == '.afc':
+            self.id3edit()
+        # FLAC
+        elif self.fileformat == '.flac' \
+                or self.fileformat == '.fla':
+            self.flacedit()
+        # MP4(m4a)
+        elif self.fileformat == '.m4a':
+            self.mp4edit()
+        # ファイルが未存在、未対応フォーマットの場合
+        else:
+            # エラー送出
+            raise
 
     def id3edit(self):
         """ ID3タグを編集 """
