@@ -106,7 +106,23 @@ class AudioFile():
 
     def mp4info(self):
         """ MP4(m4a)の曲情報を取得 """
-        pass
+        
+        self.tags = mp4.MP4(self.filepath)
+        
+        # 各項目取得
+        self.title = self.tags.get('\xa9nam', ' ')[0]
+        self.album = self.tags.get('\xa9alb', ' ')[0]
+        self.artist = self.tags.get('\xa9ART', ' ')[0]
+        self.genre = self.tags.get('\xa9gen', ' ')[0]
+
+        # アートワーク取得
+        artworks = self.tags.get('covr')    # list or None
+        artwork = None
+        if artworks:
+            for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
+                pass
+        self.artwork = artwork
+
 
     def id3info(self):
         """ ID3タグを取得 """
@@ -117,7 +133,7 @@ class AudioFile():
         #self.albumartist = str(self.tags.get('TPE2',''))
         self.genre = str(self.tags.get('TCON', ''))
 
-        # アートワーク(bytes, 表示用 最後に登録された画像のみ) self.artwork
+        # アートワーク取得
         artworks = self.tags.getall('APIC')     # リスト取得
         artwork = None
         for artwork in artworks:    # 抽出
@@ -137,7 +153,7 @@ class AudioFile():
         self.tags['TCON'] = id3.TCON(encoding=1, text=self.genre)
         #self.tags['TPE2'] = TPE2(encoding=1, text=self.albumartist)
 
-        # アートワーク
+        # アートワーク書き換え
         if not self.artwork_url == '':   # アートワーク画像のURLがある場合
             # 画像読み込み
             artwork_read = urlopen(self.artwork_url).read()
@@ -152,7 +168,7 @@ class AudioFile():
         # 保存
         self.tags.save(self.filepath)
 
-        # アートワーク更新（表示用）
+        # 表示用アートワーク更新
         artworks = self.tags.getall('APIC')  # list
         artwork = None
         for artwork in artworks:    # 抽出
@@ -201,7 +217,33 @@ class AudioFile():
 
     def mp4edit(self):
         """ MP4(m4a)の曲情報を編集 """
-        pass
+
+        # タグ書き換え
+        self.tags['\xa9nam'] = self.title
+        self.tags['\xa9alb'] = self.album
+        self.tags['\xa9ART'] = self.artist
+        self.tags['\xa9gen'] = self.genre
+
+        # アートワーク書き換え
+        if not self.artwork_url == '':
+            # 画像読み込み
+            artwork_read = urlopen(self.artwork_url).read()
+            
+            # 画像書き換え
+            pic = [mp4.MP4Cover(artwork_read, mp4.MP4Cover.FORMAT_JPEG)]    # list
+            self.tags['covr'] = pic
+
+        # 保存
+        self.tags.save(self.filepath)
+
+        # 表示用アートワーク更新
+        artworks = self.tags.get('covr')    # list or None
+        artwork = None
+        if artworks:
+            for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
+                pass
+        self.artwork = artwork
+
 
     def output(self):
         """ テスト出力用 """
