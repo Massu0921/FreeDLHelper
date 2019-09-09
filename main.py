@@ -21,12 +21,15 @@ class MyFrame(wx.Frame):
 
         # アートワーク
         aw_panel = ArtworkPanel(root_panel, imgsize=(300, 300))
+        # ファイルパス
+        fr_panel = FileRefPanel(root_panel)
         # 曲情報
         ai_panel = AudioInfoPanel(root_panel)
 
         root_layout = wx.GridBagSizer()
-        root_layout.Add(aw_panel, (0, 0), (1, 1), flag=wx.ALL, border=10)
-        root_layout.Add(ai_panel, (0, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
+        root_layout.Add(aw_panel, (0, 0), (2, 1), flag=wx.ALL, border=10)
+        root_layout.Add(fr_panel, (0, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
+        root_layout.Add(ai_panel, (1, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
         root_layout.AddGrowableCol(1)
 
         root_panel.SetSizer(root_layout)
@@ -34,6 +37,31 @@ class MyFrame(wx.Frame):
 
         self.Show()
         self.Center()  # 画面中央に表示
+
+
+class FileRefPanel(wx.Panel):
+    """ ファイルパス入力部分 """
+    
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        s_box = wx.StaticBox(self, -1, 'ファイル')
+
+        # ** 各項目 **
+        tc_file = wx.TextCtrl(self, -1)
+        bt_file = wx.Button(self, -1, label='ファイル選択')
+
+        # 配置
+        grid = wx.FlexGridSizer(cols=2, gap=(0, 0))
+        grid.Add(tc_file, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(bt_file, flag=wx.ALL, border=10)
+
+        # 引き伸ばし
+        grid.AddGrowableCol(0)
+
+        layout = wx.StaticBoxSizer(s_box, wx.HORIZONTAL)
+        layout.Add(grid, 1)
+        self.SetSizer(layout)
 
 
 class ArtworkPanel(wx.Panel):
