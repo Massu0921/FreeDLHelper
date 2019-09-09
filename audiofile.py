@@ -106,7 +106,22 @@ class AudioFile():
 
     def mp4info(self):
         """ MP4(m4a)の曲情報を取得 """
-        pass
+        
+        self.tags = mp4.MP4(self.filepath)
+        
+        # 各項目取得
+        self.title = self.tags.get('\xa9nam', ' ')[0]
+        self.album = self.tags.get('\xa9alb', ' ')[0]
+        self.artist = self.tags.get('\xa9ART', ' ')[0]
+        self.genre = self.tags.get('\xa9gen', ' ')[0]
+
+        artworks = self.tags.get('covr')    # list or None
+        artwork = None
+        if artworks:
+            for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
+                pass
+        self.artwork = artwork
+
 
     def id3info(self):
         """ ID3タグを取得 """
