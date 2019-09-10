@@ -113,7 +113,7 @@ class AudioInfoPanel(wx.Panel):
         tc_artist = wx.TextCtrl(self, -1)
 
         st_genre = wx.StaticText(self, -1, 'ジャンル: ')
-        tc_genre = wx.TextCtrl(self, -1)
+        tc_genre = wx.ComboBox(self, -1, '選択してください', choices=[], style=wx.CB_DROPDOWN)
 
         # タイトル付きBoxSizer
         s_box = wx.StaticBox(self, -1, '曲情報')
