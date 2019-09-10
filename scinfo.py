@@ -15,7 +15,7 @@ class SoundCloudInfo():
         アーティスト名
     maintag : str
         曲のメインタグ（ジャンル）
-    subtag : list[str]
+    taglist : list[str]
         曲のタグリスト
     uploaded : str
         曲のアップロード日時
@@ -49,9 +49,9 @@ class SoundCloudInfo():
         # メインタグ
         self.maintag = self.root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/','')
 
-        # サブタグ
+        # タグリスト
         tags = self.root.xpath('string(//script[8])')
-        self.subtag = self.org_subtag(tags)
+        self.taglist = self.org_subtag(tags)
 
         # アップロード日時
         uploaded = self.root.xpath('string(//time)')
@@ -99,7 +99,7 @@ class SoundCloudInfo():
         print("タイトル：　　　　{}".format(self.title))
         print("アーティスト：　　{}".format(self.artist))
         print("メインタグ：　　　{}".format(self.maintag))
-        print("サブタグ：　　　　{}".format(self.subtag))
+        print("タグリスト：　　　{}".format(self.taglist))
         print("アップロード日時：{}".format(self.uploaded))
         print("アートワーク：　　{}".format(self.artwork_url))
         print("概要：\n{}".format(self.overview))
