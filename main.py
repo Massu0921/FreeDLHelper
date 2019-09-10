@@ -25,11 +25,14 @@ class MyFrame(wx.Frame):
         fr_panel = FileRefPanel(root_panel)
         # 曲情報
         ai_panel = AudioInfoPanel(root_panel)
+        # URL入力欄
+        url_panel = URLTextPanel(root_panel)
 
         root_layout = wx.GridBagSizer()
         root_layout.Add(aw_panel, (0, 0), (2, 1), flag=wx.ALL, border=10)
         root_layout.Add(fr_panel, (0, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
         root_layout.Add(ai_panel, (1, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
+        root_layout.Add(url_panel, (2, 0), (1, 2), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
         root_layout.AddGrowableCol(1)
 
         root_panel.SetSizer(root_layout)
@@ -139,7 +142,23 @@ class URLTextPanel(wx.Panel):
     """ URL入力パネル """
 
     def __init__(self, parent):
-        pass
+        super().__init__(parent)
+
+        s_box = wx.StaticBox(self, -1, 'SoundCloudのURL')
+
+        # ** 各項目 **
+        tc_url = wx.TextCtrl(self, -1)
+
+        # 配置
+        grid = wx.FlexGridSizer(cols=1, gap=(0, 0))
+        grid.Add(tc_url, flag=wx.EXPAND | wx.ALL, border=10)
+
+        # 引き伸ばし
+        grid.AddGrowableCol(0)
+
+        layout = wx.StaticBoxSizer(s_box, wx.HORIZONTAL)
+        layout.Add(grid, 1)
+        self.SetSizer(layout)
 
 
 class ButtonPanel(wx.Panel):
