@@ -31,7 +31,7 @@ class MyFrame(wx.Frame):
         root_layout = wx.GridBagSizer()
         root_layout.Add(aw_panel, (0, 0), (2, 1), flag=wx.ALL, border=10)
         root_layout.Add(fr_panel, (0, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
-        root_layout.Add(ai_panel, (1, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
+        root_layout.Add(ai_panel, (1, 1), (1, 1), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
         root_layout.Add(url_panel, (2, 0), (1, 2), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
         root_layout.AddGrowableCol(1)
 
