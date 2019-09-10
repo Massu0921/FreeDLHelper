@@ -3,9 +3,33 @@
 import requests,os,regex,time
 import lxml.html
 
+# Exceptions
+class NotSoundCloudURL(Exception):
+    """
+    SoundCloud以外のURLが入力された場合に発生するエラー
+    """
+    pass
+
+class NotTrackURL(Exception):
+    """
+    曲以外のURLで処理が進んだ際に発生するエラー
+    """
+    pass
+
+class OfflineError(Exception):
+    """
+    オフライン時に発生するエラー
+    """
+    pass
+
+
 class SoundCloudInfo():
     """
-    SoundCloudから曲情報・アートワーク画像URLを取得する
+    SoundCloudから曲情報・アートワーク画像URLを取得する\n
+    予期されるエラー:\n
+    scinfo.NotSoundCloudURL: 無効なURLが入力されている場合\n
+    scinfo.NotTrackURL: 曲以外のURLが入力されている場合\n
+    scinfo.OfflineError: オフラインである場合
 
     Attributes
     -----------
@@ -32,10 +56,17 @@ class SoundCloudInfo():
         URL : str
             SoundCloud上の曲のURL
         """
-        # url設定
-        self.trg_url = URL
+
+        # URLチェック
+        if not URL.startswith('https://soundcloud.com/'):
+            raise NotSoundCloudURL('SoundCloudのURLではありません')
+
         # html取得
-        trg_html = requests.get(self.trg_url).text
+        try:
+            trg_html = requests.get(URL).text
+        except requests.exceptions.ConnectionError:
+            raise OfflineError('オフラインでは曲情報を取得できません')
+
         # 日本語が文字化けするので、ここでデコード
         trg_html = bytes(trg_html, 'iso-8859-1').decode('utf-8')
         self.root = lxml.html.fromstring(trg_html)
@@ -74,7 +105,11 @@ class SoundCloudInfo():
         """
         # タグを抽出(str)
         tags = tags.split('"tag_list":"')
-        tags = tags[1].split('",')[0]
+        # 曲以外のURLだとここでIndexErrorが発生する
+        try:
+            tags = tags[1].split('",')[0]
+        except IndexError:
+            raise NotTrackURL('曲以外のURLが入力されています')
 
         # スペース入りタグを抽出(list)
         space_taglist = regex.findall('\\\\".*?\\\\"', tags)
