@@ -9,7 +9,7 @@ import scinfo
 
 class MyFrame(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, None, title="FreeDLHelper", size=(800, 500))
+        wx.Frame.__init__(self, None, title="FreeDLHelper", size=(900, 550))
 
         # ** ステータスバー **
         self.CreateStatusBar()
@@ -27,12 +27,15 @@ class MyFrame(wx.Frame):
         ai_panel = AudioInfoPanel(root_panel)
         # URL入力欄
         url_panel = URLTextPanel(root_panel)
+        # ボタン
+        bt_panel = ButtonPanel(root_panel)
 
         root_layout = wx.GridBagSizer()
         root_layout.Add(aw_panel, (0, 0), (2, 1), flag=wx.ALL, border=10)
         root_layout.Add(fr_panel, (0, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
         root_layout.Add(ai_panel, (1, 1), (1, 1), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
         root_layout.Add(url_panel, (2, 0), (1, 2), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
+        root_layout.Add(bt_panel, (3, 0), (1, 2), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
         root_layout.AddGrowableCol(1)
 
         root_panel.SetSizer(root_layout)
@@ -165,7 +168,19 @@ class ButtonPanel(wx.Panel):
     """ ボタン用 """
 
     def __init__(self, parent):
-        pass
+        super().__init__(parent)
+        
+        # ** 各項目 **
+        bt_get = wx.Button(self, -1, label='情報取得')
+        bt_edit = wx.Button(self, -1, label='書き込み')
+
+        # 配置
+        grid = wx.FlexGridSizer(cols=2, gap=(0, 0))
+        grid.Add(bt_get, flag=wx.LEFT, border=200)
+        grid.Add(bt_edit, flag=wx.RIGHT, border=200)
+        grid.AddGrowableCol(0)
+
+        self.SetSizer(grid)
 
 
 if __name__ == '__main__':
