@@ -54,12 +54,15 @@ class FileRefPanel(wx.Panel):
         s_box = wx.StaticBox(self, -1, 'ファイル')
 
         # ** 各項目 **
-        tc_file = wx.TextCtrl(self, -1)
+        self.tc_file = wx.TextCtrl(self, -1)
         bt_file = wx.Button(self, -1, label='ファイル選択')
+
+        # イベント設定: ダイアログ表示
+        bt_file.Bind(wx.EVT_BUTTON, self.click_bt_file)
 
         # 配置
         grid = wx.FlexGridSizer(cols=2, gap=(0, 0))
-        grid.Add(tc_file, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(self.tc_file, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(bt_file, flag=wx.ALL, border=10)
 
         # 引き伸ばし
@@ -68,6 +71,23 @@ class FileRefPanel(wx.Panel):
         layout = wx.StaticBoxSizer(s_box, wx.HORIZONTAL)
         layout.Add(grid, 1)
         self.SetSizer(layout)
+    
+    def click_bt_file(self, event):
+        """
+        ダイアログ表示・パス取得イベント
+        """
+        # ダイアログ設定
+        dialog = wx.FileDialog(self, 'ファイルを選択してください')
+
+        # ファイルが選択された場合
+        if dialog.ShowModal() == wx.ID_OK:
+            # パスを取得
+            filepath = dialog.GetPath()
+            # テキストボックスにパス設定
+            self.tc_file.SetValue(filepath)
+        
+        # ダイアログを破棄
+        dialog.Destroy()
 
 
 class ArtworkPanel(wx.Panel):
