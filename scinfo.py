@@ -50,8 +50,8 @@ class SoundCloudInfo():
         self.maintag = self.root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/','')
 
         # サブタグ
-        tag = self.root.xpath('string(//script[8])')
-        self.subtag = self.org_subtag(tag)
+        tags = self.root.xpath('string(//script[8])')
+        self.subtag = self.org_subtag(tags)
 
         # アップロード日時
         uploaded = self.root.xpath('string(//time)')
@@ -63,7 +63,7 @@ class SoundCloudInfo():
         # アートワークURL
         self.artwork_url = self.root.xpath('normalize-space(//meta[@property="og:image"]/@content)')
 
-    def org_subtag(self,tag):
+    def org_subtag(self,tags):
         """
         タグリストの整理
         
@@ -72,21 +72,27 @@ class SoundCloudInfo():
         tag : str
             htmlから取得した文字列
         """
-        tag = tag.split('"tag_list":')
-        tag = tag[1].split(',')
+        # タグを抽出(str)
+        tags = tags.split('"tag_list":"')
+        tags = tags[1].split('",')[0]
 
-        # "\ を $ に置き換え
-        tag = tag[0].replace('\\"','$').replace('$ ','$~')
+        # スペース入りタグを抽出(list)
+        space_taglist = regex.findall('\\\\".*?\\\\"', tags)
 
-        # 正規表現で空白入りのタグを抽出
-        space_tag = ''
-        space_in = regex.findall('\$[\w\s\p!-/]+\$~',tag)  # 記号対応
-        for i in range(len(space_in)):
-            tag = tag.replace(space_in[i],'')
-            space_tag += ' #' + space_in[i].replace('$','').replace('~','')
+        # タグ(str)からスペース入りタグを除去
+        for i in range(len(space_taglist)):
+            tags = tags.replace(space_taglist[i] + ' ', '')
+            
+            # スペース入りタグの'\','#' を除去
+            space_taglist[i] = space_taglist[i].replace('\\','').replace('"', '')
+            
+        # タグを仕分ける(list化)
+        taglist = tags.split(' ')
+        # スペース入りタグリストと連結
+        taglist += space_taglist
+                
+        return taglist
 
-        tag = tag.replace('"','').replace(' ',' #')
-        return '#' + tag + space_tag
 
     def output(self):
         """ テスト出力用 """
