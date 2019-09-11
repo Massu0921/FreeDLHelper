@@ -3,8 +3,10 @@
 
 import wx
 import os
+import io
 import audiofile
 import scinfo
+from urllib.request import urlopen
 
 
 class MyFrame(wx.Frame):
@@ -33,8 +35,8 @@ class MyFrame(wx.Frame):
         root_layout = wx.GridBagSizer()
         root_layout.Add(self.aw_panel, (0, 0), (2, 1), flag=wx.ALL, border=10)
         root_layout.Add(self.fr_panel, (0, 1), (1, 1),flag=wx.EXPAND | wx.ALL, border=10)
-        root_layout.Add(self.ai_panel, (1, 1), (1, 1), flag=wx.EXPAND |wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
-        root_layout.Add(self.url_panel, (2, 0), (1, 2), flag=wx.EXPAND |wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
+        root_layout.Add(self.ai_panel, (1, 1), (1, 1), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
+        root_layout.Add(self.url_panel, (2, 0), (1, 2), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
         root_layout.Add(self.bt_panel, (3, 0), (1, 2),flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
         root_layout.AddGrowableCol(1)
 
@@ -98,18 +100,30 @@ class ArtworkPanel(wx.Panel):
         self.imgsize = imgsize
         self.set_img()
 
-    def set_img(self, input_image=''):
-        """ 画像設定用 """
+    def set_img(self, img_data=-1):
+        """
+        画像設定用
 
-        if input_image == '':
+        Parameters
+        ----------
+        img_data : str or bytes or None
+            画像のURL(str), bytes型のデータ, ない場合はNone
+        """
+
+        # 初期状態の場合
+        if img_data == -1:
             image = 'dnd_file.jpg'
-        else:
-            image = input_image
+        # URL(文字列)の場合
+        elif type(img_data) is str:
+            image = urlopen(img_data).read()
+            image = io.BytesIO(image)
+        # 画像がない(None)場合
+        elif img_data == None:
+            image = 'no_artwork.jpg'
 
         img = wx.Image(image)
         # サイズ・品質
-        newimg = img.Scale(
-            self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
+        newimg = img.Scale(self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
         # 画像描画部
         img_panel = wx.StaticBitmap(self, -1, wx.Bitmap(newimg))
         # タイトル付きBoxSizer
