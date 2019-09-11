@@ -121,22 +121,35 @@ class ArtworkPanel(wx.Panel):
 
 
 class AudioInfoPanel(wx.Panel):
-    """ 曲情報パネル """
+    """
+    曲情報パネル
+
+    Attributes
+    ----------
+    tc_title : wx.TextCtrl
+        タイトルのテキストボックス
+    tc_album : wx.TextCtrl
+        アルバム名のテキストボックス
+    tc_artist : wx.TextCtrl
+        アーティスト名のテキストボックス
+    tc_genre : wx.ComboBox
+        ジャンル一覧
+    """
 
     def __init__(self, parent):
         super().__init__(parent)
         # ** 各項目 **
         st_title = wx.StaticText(self, -1, 'タイトル: ')
-        tc_title = wx.TextCtrl(self, -1)
+        self.tc_title = wx.TextCtrl(self, -1)
 
         st_album = wx.StaticText(self, -1, 'アルバム名: ')
-        tc_album = wx.TextCtrl(self, -1)
+        self.tc_album = wx.TextCtrl(self, -1)
 
         st_artist = wx.StaticText(self, -1, 'アーティスト名: ')
-        tc_artist = wx.TextCtrl(self, -1)
+        self.tc_artist = wx.TextCtrl(self, -1)
 
         st_genre = wx.StaticText(self, -1, 'ジャンル: ')
-        tc_genre = wx.ComboBox(self, -1, '選択してください', choices=[], style=wx.CB_DROPDOWN)
+        self.tc_genre = wx.ComboBox(self, -1, '選択してください', choices=[], style=wx.CB_DROPDOWN)
 
         # タイトル付きBoxSizer
         s_box = wx.StaticBox(self, -1, '曲情報')
@@ -144,13 +157,13 @@ class AudioInfoPanel(wx.Panel):
         # 配置
         grid = wx.FlexGridSizer(cols=2, gap=(0,0))
         grid.Add(st_title, flag=wx.ALL, border=10)
-        grid.Add(tc_title, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(self.tc_title, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(st_album, flag=wx.ALL, border=10)
-        grid.Add(tc_album, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(self.tc_album, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(st_artist, flag=wx.ALL, border=10)
-        grid.Add(tc_artist, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(self.tc_artist, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(st_genre, flag=wx.ALL, border=10)
-        grid.Add(tc_genre, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(self.tc_genre, flag=wx.EXPAND | wx.ALL, border=10)
 
         # 引き伸ばし
         grid.AddGrowableCol(1)
