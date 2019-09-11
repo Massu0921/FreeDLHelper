@@ -18,15 +18,19 @@ class MyFrame(wx.Frame):
         self.SetStatusText('音声ファイルをドラッグ&ドロップしてください')
         self.GetStatusBar().SetBackgroundColour(None)
 
-        # ** 構築 **
+        # scinfo, audiofileのインスタンス作成
+        sc = scinfo.SoundCloudInfo()
+        af = audiofile.AudioFile()
+
+        # ** 構築 ** sc, afは参照渡し
         root_panel = wx.Panel(self)
 
+        # 曲情報
+        self.ai_panel = AudioInfoPanel(root_panel)
         # アートワーク
         self.aw_panel = ArtworkPanel(root_panel, imgsize=(300, 300))
         # ファイルパス
-        self.fr_panel = FileRefPanel(root_panel)
-        # 曲情報
-        self.ai_panel = AudioInfoPanel(root_panel)
+        self.fr_panel = FileRefPanel(root_panel, sc, af)
         # URL入力欄
         self.url_panel = URLTextPanel(root_panel)
         # ボタン
@@ -50,8 +54,21 @@ class MyFrame(wx.Frame):
 class FileRefPanel(wx.Panel):
     """ ファイルパス入力部分 """
 
-    def __init__(self, parent):
+    def __init__(self, parent, sc, af):
         super().__init__(parent)
+        
+        # scinfo, audiofileのインスタンス(参照)
+        self.sc = sc
+        self.af = af
+
+        # AudioInfoPanel内のテキストボックス
+        self.tc_title = parent.GetParent().ai_panel.tc_title
+        self.tc_album = parent.GetParent().ai_panel.tc_album
+        self.tc_artist = parent.GetParent().ai_panel.tc_artist
+        self.tc_genre = parent.GetParent().ai_panel.tc_genre
+
+        # ArtworkPanelの画像設定メソッド
+        self.set_img = parent.GetParent().aw_panel.set_img
 
         s_box = wx.StaticBox(self, -1, 'ファイル')
 
@@ -86,14 +103,22 @@ class FileRefPanel(wx.Panel):
             # パスを取得
             filepath = dialog.GetPath()
 
-            self.af = audiofile.AudioFile(filepath)
-
             # ファイル読み込み
             try: 
-                self.af.info()
+                self.af.info(filepath)
 
                 # テキストボックスにパス設定
                 self.tc_file.SetValue(filepath)
+
+                # 曲情報を入力
+                self.tc_title.SetValue(self.af.title)
+                self.tc_album.SetValue(self.af.album)
+                self.tc_artist.SetValue(self.af.artist)
+                self.tc_genre.SetValue(self.af.genre)
+
+                # アートワークを更新
+                self.set_img(self.af.artwork)
+
             except audiofile.FileFormatError:
                 wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
 
@@ -107,11 +132,28 @@ class ArtworkPanel(wx.Panel):
     def __init__(self, parent, imgsize):
         super().__init__(parent)
         self.imgsize = imgsize
-        self.set_img()
 
-    def set_img(self, img_data=-1):
+        image = 'dnd_file.jpg'
+        img = wx.Image(image)
+
+        # サイズ・品質
+        newimg = img.Scale(self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
+        self.img_panel = wx.StaticBitmap(self, -1, wx.Bitmap(newimg))
+
+        # タイトル付きBoxSizer
+        box = wx.StaticBox(self, -1, 'アートワーク')
+
+        # 構築
+        layout = wx.StaticBoxSizer(box, wx.VERTICAL)
+        layout.Add(self.img_panel)
+
+        self.SetSizer(layout)
+
+        img.Destroy()
+
+    def set_img(self, img_data):
         """
-        画像設定用
+        画像変更用
 
         Parameters
         ----------
@@ -119,13 +161,15 @@ class ArtworkPanel(wx.Panel):
             画像のURL(str), bytes型のデータ, ない場合はNone
         """
 
-        # 初期状態の場合
-        if img_data == -1:
-            image = 'dnd_file.jpg'
         # URL(文字列)の場合
-        elif type(img_data) is str:
+        if type(img_data) is str:
             image = urlopen(img_data).read()
             image = io.BytesIO(image)
+
+        # 画像データ(bytes)の場合
+        elif type(img_data) is bytes:
+            image = io.BytesIO(img_data)
+            
         # 画像がない(None)場合
         elif img_data == None:
             image = 'no_artwork.jpg'
@@ -133,14 +177,11 @@ class ArtworkPanel(wx.Panel):
         img = wx.Image(image)
         # サイズ・品質
         newimg = img.Scale(self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
-        # 画像描画部
-        img_panel = wx.StaticBitmap(self, -1, wx.Bitmap(newimg))
-        # タイトル付きBoxSizer
-        box = wx.StaticBox(self, -1, 'アートワーク')
-        # 構築
-        layout = wx.StaticBoxSizer(box, wx.VERTICAL)
-        layout.Add(img_panel)
-        self.SetSizer(layout)
+
+        # 画像変更
+        self.img_panel.SetBitmap(wx.Bitmap(newimg))
+
+        img.Destroy()
 
 
 class AudioInfoPanel(wx.Panel):
