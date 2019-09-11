@@ -35,15 +35,10 @@ class AudioFile():
         画像が存在しない場合はNoneが代入される
     """
 
-    def __init__(self, filepath):
-        """
-        Parameters
-        ----------
-        filepath : str
-            音声ファイルのファイルパス
-        """
-        self.filepath = filepath
-        self.fileformat = os.path.splitext(self.filepath)[1]
+    def __init__(self):
+
+        self.filepath = ''
+        self.fileformat = ''
         self.tags = None
 
         self.title = ''
@@ -54,13 +49,21 @@ class AudioFile():
         self.artwork_url = ''
         self.artwork = None
 
-
-    def info(self):
+    def info(self, filepath):
         """
         曲情報を取得する\n
         try - exceptを用いてこのメソッドを用いること\n
         ファイルが発見できない、未対応フォーマットの場合、エラー送出
+
+        Parameters
+        ----------
+        filepath : str
+            音声ファイルのファイルパス
         """
+
+        self.filepath = filepath
+        self.fileformat = os.path.splitext(self.filepath)[1]
+
         # フォーマット判別
         # MP3
         if self.fileformat == '.mp3':
@@ -305,5 +308,6 @@ class AudioFile():
 
 
 if __name__ == "__main__":
-    audiofile = AudioFile(input('対象ファイルパス: '))
+    audiofile = AudioFile()
+    audiofile.info(input('対象ファイルパス: '))
     audiofile.output()
