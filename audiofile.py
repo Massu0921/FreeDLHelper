@@ -4,6 +4,11 @@ from PIL import Image
 import io
 import os
 
+# Exceptions
+class FileFormatError(Exception):
+    """ ファイルフォーマットのエラー """
+    pass
+
 
 class AudioFile():
     """
@@ -76,7 +81,7 @@ class AudioFile():
         # ファイルが未存在、未対応フォーマットの場合
         else:
             # エラー送出
-            raise
+            raise FileFormatError('未対応のフォーマットです')
 
 
     def mp3info(self):
