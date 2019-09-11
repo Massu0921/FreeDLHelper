@@ -138,7 +138,10 @@ class AudioFile():
         if artworks:
             for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
                 pass
-        self.artwork = artwork
+        
+        # bytesへ変換
+        if artwork:
+            self.artwork = bytes(artwork)
 
     def id3info(self):
         """ ID3タグを取得 """
@@ -287,7 +290,10 @@ class AudioFile():
         if artworks:
             for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
                 pass
-        self.artwork = artwork
+        
+        # bytesへ変換
+        if artwork:
+            self.artwork = bytes(artwork)
 
 
     def output(self):
