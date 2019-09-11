@@ -85,8 +85,17 @@ class FileRefPanel(wx.Panel):
         if dialog.ShowModal() == wx.ID_OK:
             # パスを取得
             filepath = dialog.GetPath()
-            # テキストボックスにパス設定
-            self.tc_file.SetValue(filepath)
+
+            self.af = audiofile.AudioFile(filepath)
+
+            # ファイル読み込み
+            try: 
+                self.af.info()
+
+                # テキストボックスにパス設定
+                self.tc_file.SetValue(filepath)
+            except audiofile.FileFormatError:
+                wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
 
         # ダイアログを破棄
         dialog.Destroy()
