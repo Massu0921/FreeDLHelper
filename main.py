@@ -46,6 +46,10 @@ class MyFrame(wx.Frame):
 
         root_panel.SetSizer(root_layout)
         root_layout.Fit(root_panel)
+        
+        # ドラッグ&ドロップの設定
+        fdt = MyFileDropTarget(root_panel, sc, af)
+        root_panel.SetDropTarget(fdt)
 
         self.Show()
         self.Center()  # 画面中央に表示
@@ -124,6 +128,52 @@ class FileRefPanel(wx.Panel):
 
         # ダイアログを破棄
         dialog.Destroy()
+
+
+class MyFileDropTarget(wx.FileDropTarget):
+    """ ドラッグ&ドロップ """
+
+    def __init__(self, parent, sc, af):
+        wx.FileDropTarget.__init__(self)
+
+        # scinfo, audiofileのインスタンス(参照)
+        self.sc = sc
+        self.af = af
+
+        # AudioInfoPanel内のテキストボックス
+        self.tc_title = parent.GetParent().ai_panel.tc_title
+        self.tc_album = parent.GetParent().ai_panel.tc_album
+        self.tc_artist = parent.GetParent().ai_panel.tc_artist
+        self.tc_genre = parent.GetParent().ai_panel.tc_genre
+
+        # FileRefPanelのテキストボックス
+        self.tc_file = parent.GetParent().fr_panel.tc_file
+
+        # ArtworkPanelの画像設定メソッド
+        self.set_img = parent.GetParent().aw_panel.set_img
+
+    def OnDropFiles(self, x, y, filenames):
+
+        # D&Dされたパスを取得
+        dnd_filepath = filenames[0]
+        
+        # ファイル読み込み
+        try:
+            self.af.info(dnd_filepath)
+            # テキストボックスにパス設定
+            self.tc_file.SetValue(dnd_filepath)
+            # 曲情報を入力
+            self.tc_title.SetValue(self.af.title)
+            self.tc_album.SetValue(self.af.album)
+            self.tc_artist.SetValue(self.af.artist)
+            self.tc_genre.SetValue(self.af.genre)
+            # アートワークを更新
+            self.set_img(self.af.artwork)
+
+        except audiofile.FileFormatError:
+            wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
+
+        return True
 
 
 class ArtworkPanel(wx.Panel):
