@@ -148,10 +148,15 @@ class AudioInfoPanel(wx.Panel):
         アーティスト名のテキストボックス
     tc_genre : wx.ComboBox
         ジャンル一覧
+    genrelist : list[str]
+        ジャンルリスト
     """
 
     def __init__(self, parent):
         super().__init__(parent)
+
+        self.genrelist = ['']
+
         # ** 各項目 **
         st_title = wx.StaticText(self, -1, 'タイトル: ')
         self.tc_title = wx.TextCtrl(self, -1)
@@ -163,7 +168,7 @@ class AudioInfoPanel(wx.Panel):
         self.tc_artist = wx.TextCtrl(self, -1)
 
         st_genre = wx.StaticText(self, -1, 'ジャンル: ')
-        self.tc_genre = wx.ComboBox(self, -1, '選択してください', choices=[], style=wx.CB_DROPDOWN)
+        self.tc_genre = wx.ComboBox(self, -1, '選択してください', choices=self.genrelist, style=wx.CB_DROPDOWN)
 
         # タイトル付きBoxSizer
         s_box = wx.StaticBox(self, -1, '曲情報')
