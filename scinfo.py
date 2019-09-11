@@ -49,7 +49,16 @@ class SoundCloudInfo():
         SoundCloudのアートワーク画像のURL
     """
 
-    def __init__(self, URL):
+    def __init__(self):
+        self.title = ''
+        self.artist = ''
+        self.maintag = ''
+        self.taglist = []
+        self.uploaded = ''
+        self.overview = ''
+        self.artwork_url = ''
+
+    def get(self, URL):
         """
         Parameters
         ----------
@@ -140,5 +149,6 @@ class SoundCloudInfo():
         print("概要：\n{}".format(self.overview))
 
 if __name__ == '__main__':
-    scinfo = SoundCloudInfo(input('対象曲のURL: '))
+    scinfo = SoundCloudInfo()
+    scinfo.get(input('対象曲のURL: '))
     scinfo.output()
