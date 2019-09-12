@@ -83,9 +83,18 @@ class AudioFile():
             self.mp4info()
         # ファイルが未存在、未対応フォーマットの場合
         else:
-            # エラー送出
+            # すべて初期化
             self.filepath = ''
             self.fileformat = ''
+            self.tags = None
+            self.title = ''
+            self.album = ''
+            self.artist = ''
+            #self.albumartist = ''
+            self.genre = ''
+            self.artwork_url = ''
+            self.artwork = None
+            # エラー送出
             raise FileFormatError('未対応のフォーマットです')
 
 
@@ -190,9 +199,18 @@ class AudioFile():
             self.mp4edit()
         # ファイルが未存在、未対応フォーマットの場合
         else:
-            # エラー送出
+            # すべて初期化
             self.filepath = ''
             self.fileformat = ''
+            self.tags = None
+            self.title = ''
+            self.album = ''
+            self.artist = ''
+            #self.albumartist = ''
+            self.genre = ''
+            self.artwork_url = ''
+            self.artwork = None
+            # エラー送出
             raise FileFormatError('未対応のフォーマットです')
 
     def id3edit(self):
