@@ -128,7 +128,7 @@ class SoundCloudInfo():
             tags = tags.replace(space_taglist[i], '')
             
             # スペース入りタグの'\','#' を除去
-            space_taglist[i] = space_taglist[i].replace('\\','').replace('"', '')
+            space_taglist[i] = space_taglist[i].strip('\\"')
             
         # タグを仕分ける(list化)
         taglist = tags.split(' ')
