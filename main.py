@@ -145,7 +145,7 @@ class FileRefPanel(wx.Panel):
                 # ジャンルを初期状態に
                 self.cb_genre.SetItems(self.genrelist)
                 self.cb_genre.SetValue('選択してください')
-                
+
                 self.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
 
             # テキストボックスにパス設定
@@ -452,13 +452,17 @@ class ButtonPanel(wx.Panel):
             self.sc.get(url)
 
             # ジャンルリストを更新
-            self.genrelist = [self.sc.maintag] + self.sc.taglist
+            self.genrelist = self.sc.taglist
 
             # 曲情報を入力
             self.tc_title.SetValue(self.sc.title)
             self.tc_artist.SetValue(self.sc.artist)
             self.cb_genre.SetItems(self.genrelist)
-            self.cb_genre.SetLabel('選択してください')
+
+            if self.sc.maintag == '':
+                self.cb_genre.SetLabel('選択してください')
+            else:
+                self.cb_genre.SetLabel(self.sc.maintag)
 
             # 既にコメントがあるときは、改行してURL挿入
             if self.tc_comment.GetValue() != '':
