@@ -34,7 +34,7 @@ class MyFrame(wx.Frame):
         # URL入力欄
         self.url_panel = URLTextPanel(root_panel)
         # ボタン
-        self.bt_panel = ButtonPanel(root_panel)
+        self.bt_panel = ButtonPanel(root_panel, sc, af)
 
         root_layout = wx.GridBagSizer()
         root_layout.Add(self.aw_panel, (0, 0), (2, 1), flag=wx.ALL, border=10)
@@ -326,12 +326,34 @@ class URLTextPanel(wx.Panel):
 class ButtonPanel(wx.Panel):
     """ ボタン用 """
 
-    def __init__(self, parent):
+    def __init__(self, parent, sc, af):
         super().__init__(parent)
+
+        # scinfo, audiofileのインスタンス(参照)
+        self.sc = sc
+        self.af = af
+
+        # AudioInfoPanel内のテキストボックス
+        self.tc_title = parent.GetParent().ai_panel.tc_title
+        self.tc_album = parent.GetParent().ai_panel.tc_album
+        self.tc_artist = parent.GetParent().ai_panel.tc_artist
+        self.cb_genre = parent.GetParent().ai_panel.cb_genre
+
+        # ジャンルリスト
+        self.genrelist = parent.GetParent().ai_panel.genrelist
+
+        # URLPanelのテキストボックス
+        self.tc_url = parent.GetParent().url_panel.tc_url
+
+        # ArtworkPanelの画像設定メソッド
+        self.set_img = parent.GetParent().aw_panel.set_img
 
         # ** 各項目 **
         bt_get = wx.Button(self, -1, label='情報取得')
         bt_edit = wx.Button(self, -1, label='書き込み')
+
+        # イベント設定
+        bt_get.Bind(wx.EVT_BUTTON, self.click_bt_get)
 
         # 配置
         grid = wx.FlexGridSizer(cols=2, gap=(0, 0))
@@ -340,6 +362,45 @@ class ButtonPanel(wx.Panel):
         grid.AddGrowableCol(0)
 
         self.SetSizer(grid)
+
+    def click_bt_get(self, event):
+        """ SoundCloudから情報取得 """
+
+        # テキストボックスからURL取得
+        url = self.tc_url.GetValue()
+
+        # 情報取得
+        try:
+            # バー更新
+            self.GetTopLevelParent().SetStatusText('SoundCloudから情報を取得しています')
+
+            self.sc.get(url)
+
+            # ジャンルリストを更新
+            self.genrelist = [self.sc.maintag] + self.sc.taglist
+
+            # 曲情報を入力
+            self.tc_title.SetValue(self.sc.title)
+            self.tc_artist.SetValue(self.sc.artist)
+            self.cb_genre.SetItems(self.genrelist)
+            self.cb_genre.SetLabel('選択してください')
+
+            # アートワークを更新
+            self.set_img(self.sc.artwork_url)
+            self.GetTopLevelParent().SetStatusText('曲情報を確認・編集し、"書き込み"を押してください')
+
+        # エラー
+        except scinfo.NotSoundCloudURL:
+            wx.MessageBox('SoundCloudのURLを入力してください', '読み込みエラー', wx.ICON_ERROR)
+            self.GetTopLevelParent().SetStatusText('情報を取得できませんでした')
+        
+        except scinfo.NotTrackURL:
+            wx.MessageBox('曲以外のURLが入力されています', '読み込みエラー', wx.ICON_ERROR)
+            self.GetTopLevelParent().SetStatusText('情報を取得できませんでした')
+
+        except scinfo.OfflineError:
+            wx.MessageBox('オフラインでは情報取得できません\nオンラインで実行してください', '読み込みエラー', wx.ICON_ERROR)
+            self.GetTopLevelParent().SetStatusText('情報を取得できませんでした')
 
 
 if __name__ == '__main__':
