@@ -272,6 +272,8 @@ class AudioInfoPanel(wx.Panel):
         アーティスト名のテキストボックス
     cb_genre : wx.ComboBox
         ジャンル一覧
+    tc_comment : wx.TextCtrl
+        コメントのテキストボックス
     genrelist : list[str]
         ジャンルリスト
     """
@@ -294,6 +296,9 @@ class AudioInfoPanel(wx.Panel):
         st_genre = wx.StaticText(self, -1, 'ジャンル: ')
         self.cb_genre = wx.ComboBox(self, -1, '選択してください', choices=self.genrelist, style=wx.CB_DROPDOWN)
 
+        st_comment = wx.StaticText(self, -1, 'コメント: ')
+        self.tc_comment = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE)
+
         # タイトル付きBoxSizer
         s_box = wx.StaticBox(self, -1, '曲情報')
 
@@ -307,6 +312,8 @@ class AudioInfoPanel(wx.Panel):
         grid.Add(self.tc_artist, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(st_genre, flag=wx.ALL, border=10)
         grid.Add(self.cb_genre, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(st_comment, flag=wx.ALL, border=10)
+        grid.Add(self.tc_comment, flag=wx.EXPAND | wx.ALL, border=10)
 
         # 引き伸ばし
         grid.AddGrowableCol(1)
