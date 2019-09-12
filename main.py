@@ -77,6 +77,7 @@ class FileRefPanel(wx.Panel):
         self.tc_album = parent.GetParent().ai_panel.tc_album
         self.tc_artist = parent.GetParent().ai_panel.tc_artist
         self.cb_genre = parent.GetParent().ai_panel.cb_genre
+        self.tc_comment = parent.GetParent().ai_panel.tc_comment
 
         # ArtworkPanelの画像設定メソッド
         self.set_img = parent.GetParent().aw_panel.set_img
@@ -137,6 +138,7 @@ class FileRefPanel(wx.Panel):
             self.tc_album.SetValue(self.af.album)
             self.tc_artist.SetValue(self.af.artist)
             self.cb_genre.SetValue(self.af.genre)
+            self.tc_comment.SetValue(self.af.comment)
 
         # ダイアログを破棄
         dialog.Destroy()
@@ -159,6 +161,7 @@ class MyFileDropTarget(wx.FileDropTarget):
         self.tc_album = parent.GetParent().ai_panel.tc_album
         self.tc_artist = parent.GetParent().ai_panel.tc_artist
         self.cb_genre = parent.GetParent().ai_panel.cb_genre
+        self.tc_comment = parent.GetParent().ai_panel.tc_comment
 
         # FileRefPanelのテキストボックス
         self.tc_file = parent.GetParent().fr_panel.tc_file
@@ -192,6 +195,7 @@ class MyFileDropTarget(wx.FileDropTarget):
         self.tc_album.SetValue(self.af.album)
         self.tc_artist.SetValue(self.af.artist)
         self.cb_genre.SetValue(self.af.genre)
+        self.tc_comment.SetValue(self.af.comment)
 
         return True
 
@@ -369,6 +373,7 @@ class ButtonPanel(wx.Panel):
         self.tc_album = parent.GetParent().ai_panel.tc_album
         self.tc_artist = parent.GetParent().ai_panel.tc_artist
         self.cb_genre = parent.GetParent().ai_panel.cb_genre
+        self.tc_comment = parent.GetParent().ai_panel.tc_comment
 
         # ジャンルリスト
         self.genrelist = parent.GetParent().ai_panel.genrelist
@@ -422,6 +427,11 @@ class ButtonPanel(wx.Panel):
             self.cb_genre.SetItems(self.genrelist)
             self.cb_genre.SetLabel('選択してください')
 
+            # 既にコメントがあるときは、改行してURL挿入
+            if self.tc_comment.GetValue() != '':
+                url = '\n' + url
+            self.tc_comment.AppendText(url)
+
             # アートワークを更新
             self.set_img(self.sc.artwork_url)
             self.GetTopLevelParent().SetStatusText('曲情報を確認・編集し、"書き込み"を押してください')
@@ -453,6 +463,7 @@ class ButtonPanel(wx.Panel):
         self.af.album = self.tc_album.GetValue()
         self.af.artist = self.tc_artist.GetValue()
         self.af.genre = self.cb_genre.GetValue()
+        self.af.comment = self.tc_comment.GetValue()
         self.af.artwork_url = self.sc.artwork_url
 
         try:
