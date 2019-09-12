@@ -189,7 +189,7 @@ class AudioFile():
         # ファイルが未存在、未対応フォーマットの場合
         else:
             # エラー送出
-            raise
+            raise FileFormatError('未対応のフォーマットです')
 
     def id3edit(self):
         """ ID3タグを編集 """
