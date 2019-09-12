@@ -25,6 +25,11 @@ class MyFrame(wx.Frame):
         self.SetStatusText('音声ファイルをドラッグ&ドロップしてください')
         self.GetStatusBar().SetBackgroundColour(None)
 
+        # ** アイコン **
+        #tbi = wx.adv.TaskBarIcon()
+        icon = wx.Icon(ResourcePath('Resources/fdh.ico'), wx.BITMAP_TYPE_ICO)
+        self.SetIcon(icon)    
+
         # scinfo, audiofileのインスタンス作成
         sc = scinfo.SoundCloudInfo()
         af = audiofile.AudioFile()
