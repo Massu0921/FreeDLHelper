@@ -49,7 +49,16 @@ class SoundCloudInfo():
         SoundCloudのアートワーク画像のURL
     """
 
-    def __init__(self, URL):
+    def __init__(self):
+        self.title = ''
+        self.artist = ''
+        self.maintag = ''
+        self.taglist = []
+        self.uploaded = ''
+        self.overview = ''
+        self.artwork_url = ''
+
+    def get(self, URL):
         """
         Parameters
         ----------
@@ -72,27 +81,27 @@ class SoundCloudInfo():
         self.root = lxml.html.fromstring(trg_html)
 
         # タイトル
-        self.title = self.root.xpath('string(//img/@alt)')
+        self.title = str(self.root.xpath('string(//img/@alt)'))
 
         # アーティスト名
-        self.artist = self.root.xpath('string(//div[@itemprop="byArtist"]/meta/@content)')
+        self.artist = str(self.root.xpath('string(//div[@itemprop="byArtist"]/meta/@content)'))
 
         # メインタグ
-        self.maintag = self.root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/','')
+        self.maintag = str(self.root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/',''))
 
         # タグリスト
-        tags = self.root.xpath('string(//script[8])')
+        tags = str(self.root.xpath('string(//script[8])'))
         self.taglist = self.org_subtag(tags)
 
         # アップロード日時
         uploaded = self.root.xpath('string(//time)')
-        self.uploaded = uploaded[0:10]
+        self.uploaded = str(uploaded[0:10])
 
         # 概要欄
-        self.overview = self.root.xpath('string(//meta[@property="og:description"]/@content)')
+        self.overview = str(self.root.xpath('string(//meta[@property="og:description"]/@content)'))
 
         # アートワークURL
-        self.artwork_url = self.root.xpath('normalize-space(//meta[@property="og:image"]/@content)')
+        self.artwork_url = str(self.root.xpath('normalize-space(//meta[@property="og:image"]/@content)'))
 
     def org_subtag(self,tags):
         """
@@ -100,7 +109,7 @@ class SoundCloudInfo():
         
         Parameters
         ----------
-        tag : str
+        tags : str
             htmlから取得した文字列
         """
         # タグを抽出(str)
@@ -116,17 +125,21 @@ class SoundCloudInfo():
 
         # タグ(str)からスペース入りタグを除去
         for i in range(len(space_taglist)):
-            tags = tags.replace(space_taglist[i] + ' ', '')
+            tags = tags.replace(space_taglist[i], '')
             
             # スペース入りタグの'\','#' を除去
             space_taglist[i] = space_taglist[i].replace('\\','').replace('"', '')
             
         # タグを仕分ける(list化)
         taglist = tags.split(' ')
+
+        # 除去の際に生まれてしまった''要素を削除
+        new_taglist = [i for i in taglist if i != '']
+
         # スペース入りタグリストと連結
-        taglist += space_taglist
+        new_taglist += space_taglist
                 
-        return taglist
+        return new_taglist
 
 
     def output(self):
@@ -140,5 +153,6 @@ class SoundCloudInfo():
         print("概要：\n{}".format(self.overview))
 
 if __name__ == '__main__':
-    scinfo = SoundCloudInfo(input('対象曲のURL: '))
+    scinfo = SoundCloudInfo()
+    scinfo.get(input('対象曲のURL: '))
     scinfo.output()

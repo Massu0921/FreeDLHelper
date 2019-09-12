@@ -4,6 +4,16 @@ from PIL import Image
 import io
 import os
 
+# Exceptions
+class FileFormatError(Exception):
+    """ ファイルフォーマットのエラー """
+    pass
+
+
+class URLOpenError(Exception):
+    """ URLを開けなかった場合に発生するエラー """
+    pass
+
 
 class AudioFile():
     """
@@ -30,15 +40,10 @@ class AudioFile():
         画像が存在しない場合はNoneが代入される
     """
 
-    def __init__(self, filepath):
-        """
-        Parameters
-        ----------
-        filepath : str
-            音声ファイルのファイルパス
-        """
-        self.filepath = filepath
-        self.fileformat = os.path.splitext(self.filepath)[1]
+    def __init__(self):
+
+        self.filepath = ''
+        self.fileformat = ''
         self.tags = None
 
         self.title = ''
@@ -49,13 +54,21 @@ class AudioFile():
         self.artwork_url = ''
         self.artwork = None
 
-
-    def info(self):
+    def info(self, filepath):
         """
         曲情報を取得する\n
         try - exceptを用いてこのメソッドを用いること\n
         ファイルが発見できない、未対応フォーマットの場合、エラー送出
+
+        Parameters
+        ----------
+        filepath : str
+            音声ファイルのファイルパス
         """
+
+        self.filepath = filepath
+        self.fileformat = os.path.splitext(self.filepath)[1]
+
         # フォーマット判別
         # MP3
         if self.fileformat == '.mp3':
@@ -75,8 +88,19 @@ class AudioFile():
             self.mp4info()
         # ファイルが未存在、未対応フォーマットの場合
         else:
+            # すべて初期化
+            self.filepath = ''
+            self.fileformat = ''
+            self.tags = None
+            self.title = ''
+            self.album = ''
+            self.artist = ''
+            #self.albumartist = ''
+            self.genre = ''
+            self.artwork_url = ''
+            self.artwork = None
             # エラー送出
-            raise
+            raise FileFormatError('未対応のフォーマットです')
 
 
     def mp3info(self):
@@ -130,7 +154,10 @@ class AudioFile():
         if artworks:
             for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
                 pass
-        self.artwork = artwork
+        
+        # bytesへ変換
+        if artwork:
+            self.artwork = bytes(artwork)
 
     def id3info(self):
         """ ID3タグを取得 """
@@ -177,8 +204,19 @@ class AudioFile():
             self.mp4edit()
         # ファイルが未存在、未対応フォーマットの場合
         else:
+            # すべて初期化
+            self.filepath = ''
+            self.fileformat = ''
+            self.tags = None
+            self.title = ''
+            self.album = ''
+            self.artist = ''
+            #self.albumartist = ''
+            self.genre = ''
+            self.artwork_url = ''
+            self.artwork = None
             # エラー送出
-            raise
+            raise FileFormatError('未対応のフォーマットです')
 
     def id3edit(self):
         """ ID3タグを編集 """
@@ -193,7 +231,10 @@ class AudioFile():
         # アートワーク書き換え
         if not self.artwork_url == '':   # アートワーク画像のURLがある場合
             # 画像読み込み
-            artwork_read = urlopen(self.artwork_url).read()
+            try:
+                artwork_read = urlopen(self.artwork_url).read()
+            except:
+                raise URLOpenError("画像を取得できません")
 
             # アートワーク初期化
             self.tags.delall('APIC')
@@ -227,7 +268,11 @@ class AudioFile():
         # アートワーク書き換え
         if not self.artwork_url == '':
             # 画像読み込み
-            artwork_read = urlopen(self.artwork_url).read()
+            try:
+                artwork_read = urlopen(self.artwork_url).read()
+            except:
+                raise URLOpenError("画像を取得できません")
+
             # 書き込み用画像オブジェクトを作成
             pic = flac.Picture()
             pic.data = artwork_read
@@ -264,7 +309,10 @@ class AudioFile():
         # アートワーク書き換え
         if not self.artwork_url == '':
             # 画像読み込み
-            artwork_read = urlopen(self.artwork_url).read()
+            try:
+                artwork_read = urlopen(self.artwork_url).read()
+            except:
+                raise URLOpenError("画像を取得できません")
             
             # 画像書き換え
             pic = [mp4.MP4Cover(artwork_read, mp4.MP4Cover.FORMAT_JPEG)]    # list
@@ -279,7 +327,10 @@ class AudioFile():
         if artworks:
             for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
                 pass
-        self.artwork = artwork
+        
+        # bytesへ変換
+        if artwork:
+            self.artwork = bytes(artwork)
 
 
     def output(self):
@@ -300,5 +351,6 @@ class AudioFile():
 
 
 if __name__ == "__main__":
-    audiofile = AudioFile(input('対象ファイルパス: '))
+    audiofile = AudioFile()
+    audiofile.info(input('対象ファイルパス: '))
     audiofile.output()
