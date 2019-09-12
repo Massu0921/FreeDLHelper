@@ -371,6 +371,7 @@ class ButtonPanel(wx.Panel):
 
         # イベント設定
         bt_get.Bind(wx.EVT_BUTTON, self.click_bt_get)
+        bt_edit.Bind(wx.EVT_BUTTON, self.click_bt_edit)
 
         # 配置
         grid = wx.FlexGridSizer(cols=2, gap=(0, 0))
@@ -424,6 +425,35 @@ class ButtonPanel(wx.Panel):
             wx.MessageBox('オフラインでは情報取得できません\nオンラインで実行してください', '読み込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('情報を取得できませんでした')
 
+    def click_bt_edit(self, event):
+        """ 曲情報書き込み """
+
+        # ファイル未選択時
+        if self.af.filepath == '':
+            wx.MessageBox('ファイルを選択してください', 'ファイル未選択', wx.ICON_ERROR)
+            self.GetTopLevelParent().SetStatusText('音声ファイルをドラッグ&ドロップしてください')
+            return
+
+        # 曲情報を設定
+        self.af.title = self.tc_title.GetValue()
+        self.af.album = self.tc_album.GetValue()
+        self.af.artist = self.tc_artist.GetValue()
+        self.af.genre = self.cb_genre.GetValue()
+        self.af.artwork_url = self.sc.artwork_url
+
+        try:
+            self.af.edit()
+            wx.MessageBox('書き込みが完了しました', '書き込み完了', wx.OK)
+            self.GetTopLevelParent().SetStatusText('書き込み完了')
+
+        except audiofile.URLOpenError:
+            wx.MessageBox('オフラインか、その他の理由で画像の書き込みができませんでした', '書き込みエラー', wx.ICON_ERROR)
+            self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました: オンラインになっているか確認してください')
+        
+        except:
+            wx.MessageBox('曲情報の書き込みができませんでした', '書き込みエラー', wx.ICON_ERROR)
+            self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました')
+        
 
 if __name__ == '__main__':
     app = wx.App()
