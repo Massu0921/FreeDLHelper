@@ -69,7 +69,7 @@ class FileRefPanel(wx.Panel):
         self.tc_title = parent.GetParent().ai_panel.tc_title
         self.tc_album = parent.GetParent().ai_panel.tc_album
         self.tc_artist = parent.GetParent().ai_panel.tc_artist
-        self.tc_genre = parent.GetParent().ai_panel.tc_genre
+        self.cb_genre = parent.GetParent().ai_panel.cb_genre
 
         # ArtworkPanelの画像設定メソッド
         self.set_img = parent.GetParent().aw_panel.set_img
@@ -118,7 +118,7 @@ class FileRefPanel(wx.Panel):
                 self.tc_title.SetValue(self.af.title)
                 self.tc_album.SetValue(self.af.album)
                 self.tc_artist.SetValue(self.af.artist)
-                self.tc_genre.SetValue(self.af.genre)
+                self.cb_genre.SetValue(self.af.genre)
 
                 # アートワークを更新
                 self.set_img(self.af.artwork)
@@ -144,7 +144,7 @@ class MyFileDropTarget(wx.FileDropTarget):
         self.tc_title = parent.GetParent().ai_panel.tc_title
         self.tc_album = parent.GetParent().ai_panel.tc_album
         self.tc_artist = parent.GetParent().ai_panel.tc_artist
-        self.tc_genre = parent.GetParent().ai_panel.tc_genre
+        self.cb_genre = parent.GetParent().ai_panel.cb_genre
 
         # FileRefPanelのテキストボックス
         self.tc_file = parent.GetParent().fr_panel.tc_file
@@ -166,7 +166,7 @@ class MyFileDropTarget(wx.FileDropTarget):
             self.tc_title.SetValue(self.af.title)
             self.tc_album.SetValue(self.af.album)
             self.tc_artist.SetValue(self.af.artist)
-            self.tc_genre.SetValue(self.af.genre)
+            self.cb_genre.SetValue(self.af.genre)
             # アートワークを更新
             self.set_img(self.af.artwork)
 
@@ -246,7 +246,7 @@ class AudioInfoPanel(wx.Panel):
         アルバム名のテキストボックス
     tc_artist : wx.TextCtrl
         アーティスト名のテキストボックス
-    tc_genre : wx.ComboBox
+    cb_genre : wx.ComboBox
         ジャンル一覧
     genrelist : list[str]
         ジャンルリスト
@@ -268,7 +268,7 @@ class AudioInfoPanel(wx.Panel):
         self.tc_artist = wx.TextCtrl(self, -1)
 
         st_genre = wx.StaticText(self, -1, 'ジャンル: ')
-        self.tc_genre = wx.ComboBox(self, -1, '選択してください', choices=self.genrelist, style=wx.CB_DROPDOWN)
+        self.cb_genre = wx.ComboBox(self, -1, '選択してください', choices=self.genrelist, style=wx.CB_DROPDOWN)
 
         # タイトル付きBoxSizer
         s_box = wx.StaticBox(self, -1, '曲情報')
@@ -282,7 +282,7 @@ class AudioInfoPanel(wx.Panel):
         grid.Add(st_artist, flag=wx.ALL, border=10)
         grid.Add(self.tc_artist, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(st_genre, flag=wx.ALL, border=10)
-        grid.Add(self.tc_genre, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(self.cb_genre, flag=wx.EXPAND | wx.ALL, border=10)
 
         # 引き伸ばし
         grid.AddGrowableCol(1)
