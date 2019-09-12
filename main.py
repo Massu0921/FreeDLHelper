@@ -111,15 +111,6 @@ class FileRefPanel(wx.Panel):
             try: 
                 self.af.info(filepath)
 
-                # テキストボックスにパス設定
-                self.tc_file.SetValue(filepath)
-
-                # 曲情報を入力
-                self.tc_title.SetValue(self.af.title)
-                self.tc_album.SetValue(self.af.album)
-                self.tc_artist.SetValue(self.af.artist)
-                self.cb_genre.SetValue(self.af.genre)
-
                 # アートワークを更新
                 self.set_img(self.af.artwork)
 
@@ -128,7 +119,17 @@ class FileRefPanel(wx.Panel):
 
             except audiofile.FileFormatError:
                 wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
+                self.set_img()
                 self.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
+
+            # テキストボックスにパス設定
+            self.tc_file.SetValue(self.af.filepath)
+
+            # 曲情報を入力
+            self.tc_title.SetValue(self.af.title)
+            self.tc_album.SetValue(self.af.album)
+            self.tc_artist.SetValue(self.af.artist)
+            self.cb_genre.SetValue(self.af.genre)
 
         # ダイアログを破棄
         dialog.Destroy()
@@ -166,13 +167,7 @@ class MyFileDropTarget(wx.FileDropTarget):
         # ファイル読み込み
         try:
             self.af.info(dnd_filepath)
-            # テキストボックスにパス設定
-            self.tc_file.SetValue(dnd_filepath)
-            # 曲情報を入力
-            self.tc_title.SetValue(self.af.title)
-            self.tc_album.SetValue(self.af.album)
-            self.tc_artist.SetValue(self.af.artist)
-            self.cb_genre.SetValue(self.af.genre)
+
             # アートワークを更新
             self.set_img(self.af.artwork)
             self.parent.GetTopLevelParent().SetStatusText(
@@ -180,7 +175,16 @@ class MyFileDropTarget(wx.FileDropTarget):
 
         except audiofile.FileFormatError:
             wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
+            self.set_img()
             self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
+        
+        # テキストボックスにパス設定
+        self.tc_file.SetValue(self.af.filepath)
+        # 曲情報を入力
+        self.tc_title.SetValue(self.af.title)
+        self.tc_album.SetValue(self.af.album)
+        self.tc_artist.SetValue(self.af.artist)
+        self.cb_genre.SetValue(self.af.genre)
 
         return True
 
@@ -210,7 +214,7 @@ class ArtworkPanel(wx.Panel):
 
         img.Destroy()
 
-    def set_img(self, img_data):
+    def set_img(self, img_data=-1):
         """
         画像変更用
 
@@ -232,6 +236,10 @@ class ArtworkPanel(wx.Panel):
         # 画像がない(None)場合
         elif img_data == None:
             image = 'no_artwork.jpg'
+        
+        # 引数なし
+        elif img_data == -1:
+            image = 'dnd_file.jpg'
 
         img = wx.Image(image)
         # サイズ・品質
