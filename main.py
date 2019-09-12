@@ -79,6 +79,9 @@ class FileRefPanel(wx.Panel):
         self.cb_genre = parent.GetParent().ai_panel.cb_genre
         self.tc_comment = parent.GetParent().ai_panel.tc_comment
 
+        # ジャンルリスト
+        self.genrelist = parent.GetParent().ai_panel.genrelist
+
         # ArtworkPanelの画像設定メソッド
         self.set_img = parent.GetParent().aw_panel.set_img
 
@@ -107,6 +110,10 @@ class FileRefPanel(wx.Panel):
         """
         ダイアログ表示・パス取得イベント
         """
+
+        # ジャンルリストを初期化
+        self.genrelist = ['']
+
         # ダイアログ設定
         dialog = wx.FileDialog(self, 'ファイルを選択してください')
 
@@ -122,12 +129,23 @@ class FileRefPanel(wx.Panel):
                 # アートワークを更新
                 self.set_img(self.af.artwork)
 
+                # ジャンルを入力
+                self.cb_genre.SetItems(self.genrelist)
+                self.cb_genre.SetValue(self.af.genre)
+
                 self.GetTopLevelParent().SetStatusText(
                     'ファイルの読み込みが完了しました。SoundCloudのURLを入力し、"情報取得"を押してください')
 
             except audiofile.FileFormatError:
                 wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
+
+                # アートワークを初期状態に
                 self.set_img()
+
+                # ジャンルを初期状態に
+                self.cb_genre.SetItems(self.genrelist)
+                self.cb_genre.SetValue('選択してください')
+                
                 self.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
 
             # テキストボックスにパス設定
@@ -137,7 +155,6 @@ class FileRefPanel(wx.Panel):
             self.tc_title.SetValue(self.af.title)
             self.tc_album.SetValue(self.af.album)
             self.tc_artist.SetValue(self.af.artist)
-            self.cb_genre.SetValue(self.af.genre)
             self.tc_comment.SetValue(self.af.comment)
 
         # ダイアログを破棄
@@ -171,6 +188,9 @@ class MyFileDropTarget(wx.FileDropTarget):
 
     def OnDropFiles(self, x, y, filenames):
 
+        # ジャンルリストを初期化
+        self.genrelist = ['']
+
         # D&Dされたパスを取得
         dnd_filepath = filenames[0]
         
@@ -180,21 +200,34 @@ class MyFileDropTarget(wx.FileDropTarget):
 
             # アートワークを更新
             self.set_img(self.af.artwork)
+
+            # ジャンルを入力
+            self.cb_genre.SetItems(self.genrelist)
+            self.cb_genre.SetValue(self.af.genre)
+
             self.parent.GetTopLevelParent().SetStatusText(
                 'ファイルの読み込みが完了しました。SoundCloudのURLを入力し、"情報取得"を押してください')
+            self.cb_genre.SetValue(self.af.genre)
 
         except audiofile.FileFormatError:
             wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
+
+            # アートワークを初期状態に
             self.set_img()
+            
+            # ジャンルを初期状態に
+            self.cb_genre.SetItems(self.genrelist)
+            self.cb_genre.SetValue('選択してください')
+
             self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
         
         # テキストボックスにパス設定
         self.tc_file.SetValue(self.af.filepath)
+
         # 曲情報を入力
         self.tc_title.SetValue(self.af.title)
         self.tc_album.SetValue(self.af.album)
         self.tc_artist.SetValue(self.af.artist)
-        self.cb_genre.SetValue(self.af.genre)
         self.tc_comment.SetValue(self.af.comment)
 
         return True
