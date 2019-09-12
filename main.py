@@ -28,7 +28,7 @@ class MyFrame(wx.Frame):
         # ** アイコン **
         #tbi = wx.adv.TaskBarIcon()
         icon = wx.Icon(ResourcePath('Resources/fdh.ico'), wx.BITMAP_TYPE_ICO)
-        self.SetIcon(icon)    
+        self.SetIcon(icon)
 
         # scinfo, audiofileのインスタンス作成
         sc = scinfo.SoundCloudInfo()
@@ -42,7 +42,7 @@ class MyFrame(wx.Frame):
         # アートワーク
         self.aw_panel = ArtworkPanel(root_panel, imgsize=(300, 300))
         # ファイルパス
-        self.fr_panel = FileRefPanel(root_panel, sc, af)
+        self.fr_panel = FileRefPanel(root_panel, af)
         # URL入力欄
         self.url_panel = URLTextPanel(root_panel)
         # ボタン
@@ -50,17 +50,17 @@ class MyFrame(wx.Frame):
 
         root_layout = wx.GridBagSizer()
         root_layout.Add(self.aw_panel, (0, 0), (2, 1), flag=wx.ALL, border=10)
-        root_layout.Add(self.fr_panel, (0, 1), (1, 1),flag=wx.EXPAND | wx.ALL, border=10)
+        root_layout.Add(self.fr_panel, (0, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
         root_layout.Add(self.ai_panel, (1, 1), (1, 1), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
         root_layout.Add(self.url_panel, (2, 0), (1, 2), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
-        root_layout.Add(self.bt_panel, (3, 0), (1, 2),flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
+        root_layout.Add(self.bt_panel, (3, 0), (1, 2), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
         root_layout.AddGrowableCol(1)
 
         root_panel.SetSizer(root_layout)
         root_layout.Fit(root_panel)
-        
+
         # ドラッグ&ドロップの設定
-        fdt = MyFileDropTarget(root_panel, sc, af)
+        fdt = MyFileDropTarget(root_panel, af)
         root_panel.SetDropTarget(fdt)
 
         self.Show()
@@ -70,11 +70,10 @@ class MyFrame(wx.Frame):
 class FileRefPanel(wx.Panel):
     """ ファイルパス入力部分 """
 
-    def __init__(self, parent, sc, af):
+    def __init__(self, parent, af):
         super().__init__(parent)
-        
-        # scinfo, audiofileのインスタンス(参照)
-        self.sc = sc
+
+        # audiofileのインスタンス(参照)
         self.af = af
 
         # AudioInfoPanel内のテキストボックス
@@ -132,7 +131,7 @@ class FileRefPanel(wx.Panel):
             filepath = dialog.GetPath()
 
             # ファイル読み込み
-            try: 
+            try:
                 self.af.info(filepath)
 
                 # アートワークを更新
@@ -173,13 +172,12 @@ class FileRefPanel(wx.Panel):
 class MyFileDropTarget(wx.FileDropTarget):
     """ ドラッグ&ドロップ """
 
-    def __init__(self, parent, sc, af):
+    def __init__(self, parent, af):
         wx.FileDropTarget.__init__(self)
 
         self.parent = parent
 
-        # scinfo, audiofileのインスタンス(参照)
-        self.sc = sc
+        # audiofileのインスタンス(参照)
         self.af = af
 
         # AudioInfoPanel内のテキストボックス
@@ -202,7 +200,7 @@ class MyFileDropTarget(wx.FileDropTarget):
 
         # D&Dされたパスを取得
         dnd_filepath = filenames[0]
-        
+
         # ファイル読み込み
         try:
             self.af.info(dnd_filepath)
@@ -223,13 +221,13 @@ class MyFileDropTarget(wx.FileDropTarget):
 
             # アートワークを初期状態に
             self.set_img()
-            
+
             # ジャンルを初期状態に
             self.cb_genre.SetItems(self.genrelist)
             self.cb_genre.SetValue('選択してください')
 
             self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
-        
+
         # テキストボックスにパス設定
         self.tc_file.SetValue(self.af.filepath)
 
@@ -285,11 +283,11 @@ class ArtworkPanel(wx.Panel):
         # 画像データ(bytes)の場合
         elif type(img_data) is bytes:
             image = io.BytesIO(img_data)
-            
+
         # 画像がない(None)場合
         elif img_data == None:
             image = ResourcePath('Resources/no_artwork.jpg')
-        
+
         # 引数なし
         elif img_data == -1:
             image = ResourcePath('Resources/dnd_file.jpg')
@@ -486,13 +484,14 @@ class ButtonPanel(wx.Panel):
         except scinfo.NotSoundCloudURL:
             wx.MessageBox('SoundCloudのURLを入力してください', '読み込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('情報を取得できませんでした')
-        
+
         except scinfo.NotTrackURL:
             wx.MessageBox('曲以外のURLが入力されています', '読み込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('情報を取得できませんでした')
 
         except scinfo.OfflineError:
-            wx.MessageBox('オフラインでは情報取得できません\nオンラインで実行してください', '読み込みエラー', wx.ICON_ERROR)
+            wx.MessageBox('オフラインでは情報取得できません\nオンラインで実行してください',
+                          '読み込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('情報を取得できませんでした')
 
     def click_bt_edit(self, event):
@@ -518,13 +517,14 @@ class ButtonPanel(wx.Panel):
             self.GetTopLevelParent().SetStatusText('書き込み完了')
 
         except audiofile.URLOpenError:
-            wx.MessageBox('オフラインか、その他の理由で画像の書き込みができませんでした', '書き込みエラー', wx.ICON_ERROR)
+            wx.MessageBox('オフラインか、その他の理由で画像の書き込みができませんでした',
+                          '書き込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました: オンラインになっているか確認してください')
-        
+
         except:
             wx.MessageBox('曲情報の書き込みができませんでした', '書き込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました')
-        
+
 
 if __name__ == '__main__':
     app = wx.App()
