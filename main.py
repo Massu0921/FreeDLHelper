@@ -123,8 +123,12 @@ class FileRefPanel(wx.Panel):
                 # アートワークを更新
                 self.set_img(self.af.artwork)
 
+                self.GetTopLevelParent().SetStatusText(
+                    'ファイルの読み込みが完了しました。SoundCloudのURLを入力し、"情報取得"を押してください')
+
             except audiofile.FileFormatError:
                 wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
+                self.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
 
         # ダイアログを破棄
         dialog.Destroy()
@@ -135,6 +139,8 @@ class MyFileDropTarget(wx.FileDropTarget):
 
     def __init__(self, parent, sc, af):
         wx.FileDropTarget.__init__(self)
+
+        self.parent = parent
 
         # scinfo, audiofileのインスタンス(参照)
         self.sc = sc
@@ -169,9 +175,12 @@ class MyFileDropTarget(wx.FileDropTarget):
             self.cb_genre.SetValue(self.af.genre)
             # アートワークを更新
             self.set_img(self.af.artwork)
+            self.parent.GetTopLevelParent().SetStatusText(
+                'ファイルの読み込みが完了しました。SoundCloudのURLを入力し、"情報取得"を押してください')
 
         except audiofile.FileFormatError:
             wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
+            self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
 
         return True
 
