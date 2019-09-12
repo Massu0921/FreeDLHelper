@@ -84,6 +84,8 @@ class AudioFile():
         # ファイルが未存在、未対応フォーマットの場合
         else:
             # エラー送出
+            self.filepath = ''
+            self.fileformat = ''
             raise FileFormatError('未対応のフォーマットです')
 
 
@@ -189,6 +191,8 @@ class AudioFile():
         # ファイルが未存在、未対応フォーマットの場合
         else:
             # エラー送出
+            self.filepath = ''
+            self.fileformat = ''
             raise FileFormatError('未対応のフォーマットです')
 
     def id3edit(self):
