@@ -3,10 +3,17 @@
 
 import wx
 import os
+import sys
 import io
 import audiofile
 import scinfo
 from urllib.request import urlopen
+
+# リソースアクセス用
+def ResourcePath(filename):
+  if hasattr(sys, "_MEIPASS"):
+      return os.path.join(sys._MEIPASS, filename)
+  return os.path.join(filename)
 
 
 class MyFrame(wx.Frame):
@@ -196,7 +203,7 @@ class ArtworkPanel(wx.Panel):
         super().__init__(parent)
         self.imgsize = imgsize
 
-        image = 'dnd_file.jpg'
+        image = ResourcePath('Resources/dnd_file.jpg')
         img = wx.Image(image)
 
         # サイズ・品質
@@ -235,11 +242,11 @@ class ArtworkPanel(wx.Panel):
             
         # 画像がない(None)場合
         elif img_data == None:
-            image = 'no_artwork.jpg'
+            image = ResourcePath('Resources/no_artwork.jpg')
         
         # 引数なし
         elif img_data == -1:
-            image = 'dnd_file.jpg'
+            image = ResourcePath('Resources/dnd_file.jpg')
 
         img = wx.Image(image)
         # サイズ・品質
