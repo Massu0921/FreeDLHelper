@@ -33,6 +33,8 @@ class AudioFile():
         アーティスト名
     genre : str
         ジャンル
+    comment : str
+        コメント
     artwork_url : str
         アートワーク画像のURL
     artwork : bytes or None
@@ -51,6 +53,7 @@ class AudioFile():
         self.artist = ''
         #self.albumartist = ''
         self.genre = ''
+        self.comment = ''
         self.artwork_url = ''
         self.artwork = None
 
@@ -97,6 +100,7 @@ class AudioFile():
             self.artist = ''
             #self.albumartist = ''
             self.genre = ''
+            self.comment = ''
             self.artwork_url = ''
             self.artwork = None
             # エラー送出
@@ -127,6 +131,7 @@ class AudioFile():
         self.album = self.tags.get('ALBUM', ' ')[0]
         self.artist = self.tags.get('ARTIST', ' ')[0]
         self.genre = self.tags.get('GENRE', ' ')[0]
+        self.comment = self.tags.get('COMMENT', ' ')[0]
 
         artworks = self.tags.pictures
         artwork = None
@@ -147,6 +152,7 @@ class AudioFile():
         self.album = self.tags.get('\xa9alb', ' ')[0]
         self.artist = self.tags.get('\xa9ART', ' ')[0]
         self.genre = self.tags.get('\xa9gen', ' ')[0]
+        self.comment = self.tags.get('\xa9cmt', ' ')[0]
 
         # アートワーク取得
         artworks = self.tags.get('covr')    # list or None
@@ -167,6 +173,14 @@ class AudioFile():
         self.artist = str(self.tags.get('TPE1', ''))
         #self.albumartist = str(self.tags.get('TPE2',''))
         self.genre = str(self.tags.get('TCON', ''))
+
+        # コメント取得
+        try:
+            self.comment = str(self.tags.getall('COMM')[0])
+
+        # コメントなしの場合
+        except IndexError:
+            self.comment = ''
 
         # アートワーク取得
         artworks = self.tags.getall('APIC')     # リスト取得
@@ -213,6 +227,7 @@ class AudioFile():
             self.artist = ''
             #self.albumartist = ''
             self.genre = ''
+            self.comment = ''
             self.artwork_url = ''
             self.artwork = None
             # エラー送出
@@ -227,6 +242,9 @@ class AudioFile():
         self.tags['TPE1'] = id3.TPE1(encoding=1, text=self.artist)
         self.tags['TCON'] = id3.TCON(encoding=1, text=self.genre)
         #self.tags['TPE2'] = TPE2(encoding=1, text=self.albumartist)
+
+        self.tags.delall('COMM')
+        self.tags['COMM'] = id3.COMM(encoding=1, text=self.comment)
 
         # アートワーク書き換え
         if not self.artwork_url == '':   # アートワーク画像のURLがある場合
@@ -264,6 +282,7 @@ class AudioFile():
         self.tags['ALBUM'] = self.album
         self.tags['ARTIST'] = self.artist
         self.tags['GENRE'] = self.genre
+        self.tags['COMMENT'] = self.comment
 
         # アートワーク書き換え
         if not self.artwork_url == '':
@@ -305,6 +324,7 @@ class AudioFile():
         self.tags['\xa9alb'] = self.album
         self.tags['\xa9ART'] = self.artist
         self.tags['\xa9gen'] = self.genre
+        self.tags['\xa9cmt'] = self.comment
 
         # アートワーク書き換え
         if not self.artwork_url == '':
@@ -341,6 +361,7 @@ class AudioFile():
         print("アーティスト　　　　　: {}".format(self.artist))
         #print("アルバムのアーティスト: {}".format(self.albumartist))
         print("ジャンル　　　　　　　: {}".format(self.genre))
+        print("コメント　　　　　　　: \n{}".format(self.comment))
 
         # アートワーク表示
         if self.artwork != None:
