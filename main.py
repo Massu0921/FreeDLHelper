@@ -383,6 +383,11 @@ class ButtonPanel(wx.Panel):
     def click_bt_get(self, event):
         """ SoundCloudから情報取得 """
 
+        if self.af.filepath == '':
+            wx.MessageBox('ファイルを先に選択してください', 'ファイル未選択', wx.ICON_ERROR)
+            self.GetTopLevelParent().SetStatusText('音声ファイルをドラッグ&ドロップしてください')
+            return
+
         # テキストボックスからURL取得
         url = self.tc_url.GetValue()
 
