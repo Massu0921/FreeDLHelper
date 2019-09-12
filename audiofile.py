@@ -10,6 +10,11 @@ class FileFormatError(Exception):
     pass
 
 
+class URLOpenError(Exception):
+    """ URLを開けなかった場合に発生するエラー """
+    pass
+
+
 class AudioFile():
     """
     音声ファイルの曲情報を取得・編集する
@@ -226,7 +231,10 @@ class AudioFile():
         # アートワーク書き換え
         if not self.artwork_url == '':   # アートワーク画像のURLがある場合
             # 画像読み込み
-            artwork_read = urlopen(self.artwork_url).read()
+            try:
+                artwork_read = urlopen(self.artwork_url).read()
+            except:
+                raise URLOpenError("画像を取得できません")
 
             # アートワーク初期化
             self.tags.delall('APIC')
@@ -260,7 +268,11 @@ class AudioFile():
         # アートワーク書き換え
         if not self.artwork_url == '':
             # 画像読み込み
-            artwork_read = urlopen(self.artwork_url).read()
+            try:
+                artwork_read = urlopen(self.artwork_url).read()
+            except:
+                raise URLOpenError("画像を取得できません")
+
             # 書き込み用画像オブジェクトを作成
             pic = flac.Picture()
             pic.data = artwork_read
@@ -297,7 +309,10 @@ class AudioFile():
         # アートワーク書き換え
         if not self.artwork_url == '':
             # 画像読み込み
-            artwork_read = urlopen(self.artwork_url).read()
+            try:
+                artwork_read = urlopen(self.artwork_url).read()
+            except:
+                raise URLOpenError("画像を取得できません")
             
             # 画像書き換え
             pic = [mp4.MP4Cover(artwork_read, mp4.MP4Cover.FORMAT_JPEG)]    # list
