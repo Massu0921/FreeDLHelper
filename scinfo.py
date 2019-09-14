@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding: utf-8
-import requests,os,regex,time
+import requests,os,regex
 import lxml.html
 
 # Exceptions
