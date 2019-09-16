@@ -403,11 +403,14 @@ class URLTextPanel(wx.Panel):
 
         # ** 各項目 **
         self.tc_url = wx.TextCtrl(self, -1)
-        #self.bt_url_clear = wx.Butto
+        bt_url_clear = wx.Button(self, -1, label='クリア')
+
+        bt_url_clear.Bind(wx.EVT_BUTTON, self.click_bt_url_clear)
 
         # 配置
-        grid = wx.FlexGridSizer(cols=1, gap=(0, 0))
+        grid = wx.FlexGridSizer(cols=2, gap=(0, 0))
         grid.Add(self.tc_url, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(bt_url_clear, flag=wx.ALL, border=10)
 
         # 引き伸ばし
         grid.AddGrowableCol(0)
@@ -415,6 +418,9 @@ class URLTextPanel(wx.Panel):
         layout = wx.StaticBoxSizer(s_box, wx.HORIZONTAL)
         layout.Add(grid, 1)
         self.SetSizer(layout)
+
+    def click_bt_url_clear(self, event):
+        self.tc_url.Clear()
 
 
 class ButtonPanel(wx.Panel):
