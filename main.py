@@ -18,7 +18,7 @@ def ResourcePath(filename):
 
 class MyFrame(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, None, title="FreeDLHelper v1.0", size=(900, 550))
+        wx.Frame.__init__(self, None, title="FreeDLHelper v1.1b", size=(900, 550))
 
         # ** ステータスバー **
         self.CreateStatusBar()
@@ -340,8 +340,6 @@ class AudioInfoPanel(wx.Panel):
         ジャンル一覧
     tc_comment : wx.TextCtrl
         コメントのテキストボックス
-    genrelist : list[str]
-        ジャンルリスト
     """
 
     def __init__(self, parent):
@@ -493,14 +491,26 @@ class ButtonPanel(wx.Panel):
             self.cb_artist.SetItems(artistlist)
             self.cb_genre.SetItems(genrelist)
 
-            # 曲情報を入力
-            self.cb_title.SetValue(self.sc.title)
-            self.cb_artist.SetValue(self.sc.artist)
-
-            if self.sc.maintag == '':
-                self.cb_genre.SetLabel('選択してください')
+            # 曲情報を入力: 元の情報は保持
+            if self.af.title == '':
+                self.cb_title.SetValue(self.sc.title)
             else:
-                self.cb_genre.SetLabel(self.sc.maintag)
+                self.cb_title.SetValue(self.af.title)
+            
+            self.cb_album.SetValue(self.af.album)
+
+            if self.af.artist == '':
+                self.cb_artist.SetValue(self.sc.artist)
+            else:
+                self.cb_artist.SetValue(self.af.artist)
+
+            if self.af.genre == '':
+                if self.sc.maintag == '':
+                    self.cb_genre.SetLabel('選択してください')
+                else:
+                    self.cb_genre.SetLabel(self.sc.maintag)
+            else:
+                self.cb_genre.SetLabel(self.af.genre)
 
             # 既にコメントがあるときは、改行してURL挿入
             if self.tc_comment.GetValue() != '':
