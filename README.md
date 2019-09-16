@@ -1,20 +1,20 @@
-# FreeDLHelper
+# FreeDLHelper v1.0
 SoundCloudから楽曲情報・アートワーク画像を取得し、Free DLなどした音声ファイルに不足情報を追加するツールです。
 
 ## 環境
 - Windows10 Python 3.7.4 \
 macOSでの動作は確認していません
 
-## ライブラリ
-- requests
+## インストールが必要なライブラリ
+- Requests https://2.python-requests.org/en/master/
 > `py -m pip install requests`
-- lxml
+- lxml https://lxml.de/
 > `py -m pip install lxml`
-- regex
+- regex https://bitbucket.org/mrabarnett/mrab-regex/src/default/
 > `py -m pip install regex`
-- mutagen
+- mutagen https://github.com/quodlibet/mutagen
 > `py -m pip install mutagen`
-- wxPython
+- wxPython http://wxPython.org/
 > `py -m pip install wxpython`
 
 ## 使用方法
