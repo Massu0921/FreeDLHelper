@@ -41,10 +41,10 @@ class MyFrame(wx.Frame):
         self.ai_panel = AudioInfoPanel(root_panel)
         # アートワーク
         self.aw_panel = ArtworkPanel(root_panel, imgsize=(300, 300))
-        # ファイルパス
-        self.fr_panel = FileRefPanel(root_panel, sc, af)
         # URL入力欄
         self.url_panel = URLTextPanel(root_panel)
+        # ファイルパス
+        self.fr_panel = FileRefPanel(root_panel, sc, af)
         # ボタン
         self.bt_panel = ButtonPanel(root_panel, sc, af)
 
@@ -83,6 +83,9 @@ class FileRefPanel(wx.Panel):
         self.cb_artist = parent.GetParent().ai_panel.cb_artist
         self.cb_genre = parent.GetParent().ai_panel.cb_genre
         self.tc_comment = parent.GetParent().ai_panel.tc_comment
+
+        # URL入力欄
+        self.tc_url = parent.GetParent().url_panel.tc_url
 
         # ArtworkPanelの画像設定メソッド
         self.set_img = parent.GetParent().aw_panel.set_img
@@ -180,6 +183,9 @@ class FileRefPanel(wx.Panel):
             self.cb_artist.SetValue(self.af.artist)
             self.tc_comment.SetValue(self.af.comment)
 
+            # URL入力欄をクリア
+            self.tc_url.Clear()
+
         # ダイアログを破棄
         dialog.Destroy()
 
@@ -202,6 +208,9 @@ class MyFileDropTarget(wx.FileDropTarget):
         self.cb_artist = parent.GetParent().ai_panel.cb_artist
         self.cb_genre = parent.GetParent().ai_panel.cb_genre
         self.tc_comment = parent.GetParent().ai_panel.tc_comment
+
+        # URL入力欄
+        self.tc_url = parent.GetParent().url_panel.tc_url
 
         # FileRefPanelのテキストボックス
         self.tc_file = parent.GetParent().fr_panel.tc_file
@@ -267,6 +276,9 @@ class MyFileDropTarget(wx.FileDropTarget):
         self.cb_album.SetValue(self.af.album)
         self.cb_artist.SetValue(self.af.artist)
         self.tc_comment.SetValue(self.af.comment)
+
+        # URL入力欄をクリア
+        self.tc_url.Clear()
 
         return True
 
