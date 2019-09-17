@@ -42,7 +42,7 @@ class MyFrame(wx.Frame):
         # アートワーク
         self.aw_panel = ArtworkPanel(root_panel, imgsize=(300, 300))
         # ファイルパス
-        self.fr_panel = FileRefPanel(root_panel, af)
+        self.fr_panel = FileRefPanel(root_panel, sc, af)
         # URL入力欄
         self.url_panel = URLTextPanel(root_panel)
         # ボタン
@@ -60,7 +60,7 @@ class MyFrame(wx.Frame):
         root_layout.Fit(root_panel)
 
         # ドラッグ&ドロップの設定
-        fdt = MyFileDropTarget(root_panel, af)
+        fdt = MyFileDropTarget(root_panel, sc, af)
         root_panel.SetDropTarget(fdt)
 
         self.Show()
@@ -70,10 +70,11 @@ class MyFrame(wx.Frame):
 class FileRefPanel(wx.Panel):
     """ ファイルパス入力部分 """
 
-    def __init__(self, parent, af):
+    def __init__(self, parent, sc, af):
         super().__init__(parent)
 
-        # audiofileのインスタンス(参照)
+        # scinfo, audiofileのインスタンス(参照)
+        self.sc = sc
         self.af = af
 
         # AudioInfoPanel内のテキストボックス
@@ -127,6 +128,10 @@ class FileRefPanel(wx.Panel):
 
         # ファイルが選択された場合
         if dialog.ShowModal() == wx.ID_OK:
+
+            # アートワークURLを初期化
+            self.sc.artwork_url = ''
+
             # パスを取得
             filepath = dialog.GetPath()
 
@@ -182,12 +187,13 @@ class FileRefPanel(wx.Panel):
 class MyFileDropTarget(wx.FileDropTarget):
     """ ドラッグ&ドロップ """
 
-    def __init__(self, parent, af):
+    def __init__(self, parent, sc, af):
         wx.FileDropTarget.__init__(self)
 
         self.parent = parent
 
-        # audiofileのインスタンス(参照)
+        # scinfo, audiofileのインスタンス(参照)
+        self.sc = sc
         self.af = af
 
         # AudioInfoPanel内のテキストボックス
@@ -210,6 +216,9 @@ class MyFileDropTarget(wx.FileDropTarget):
         albumlist = ['']
         artistlist = ['']
         genrelist = ['']
+
+        # アートワークURLを初期化
+        self.sc.artwork_url = ''
 
         # D&Dされたパスを取得
         dnd_filepath = filenames[0]
