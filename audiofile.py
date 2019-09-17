@@ -244,7 +244,7 @@ class AudioFile():
         #self.tags['TPE2'] = TPE2(encoding=1, text=self.albumartist)
 
         self.tags.delall('COMM')
-        self.tags['COMM'] = id3.COMM(encoding=1, text=self.comment)
+        self.tags['COMM'] = id3.COMM(encoding=1, lang='eng', text=self.comment)
 
         # アートワーク書き換え
         if not self.artwork_url == '':   # アートワーク画像のURLがある場合
