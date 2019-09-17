@@ -583,10 +583,15 @@ class ButtonPanel(wx.Panel):
             self.af.edit()
             wx.MessageBox('書き込みが完了しました', '書き込み完了', wx.OK)
             self.GetTopLevelParent().SetStatusText('書き込み完了')
+        
+        except FileNotFoundError:
+            wx.MessageBox('ファイルが見つからないため、曲情報の書き込みができませんでした', 
+                        '書き込みエラー', wx.ICON_ERROR)
+            self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました: ファイルが見つかりません')
 
         except audiofile.URLOpenError:
             wx.MessageBox('オフラインか、その他の理由で画像の書き込みができませんでした',
-                          '書き込みエラー', wx.ICON_ERROR)
+                        '書き込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました: オンラインになっているか確認してください')
 
         except:
