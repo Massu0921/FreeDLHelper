@@ -119,6 +119,10 @@ class AudioFile():
     def aiffinfo(self):
         """ AIFFの曲情報を取得 """
         self.tags = aiff.AIFF(self.filepath).tags
+        # ID3タグが存在しない場合
+        if self.tags == None:
+            # 空のAIFFID3オブジェクトを作成
+            self.tags = aiff._IFFID3()
         self.id3info()
 
     def flacinfo(self):
