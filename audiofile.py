@@ -199,6 +199,11 @@ class AudioFile():
         try - exceptを用いてこのメソッドを用いること\n
         ファイルが発見できない、未対応フォーマットの場合、エラー送出
         """
+
+        # ファイルの存在確認
+        if not os.path.exists(self.filepath):
+            raise FileNotFoundError('ファイルが見つかりませんでした')
+
         # フォーマット判別
         # MP3
         if self.fileformat == '.mp3':
@@ -216,7 +221,7 @@ class AudioFile():
         # MP4(m4a)
         elif self.fileformat == '.m4a':
             self.mp4edit()
-        # ファイルが未存在、未対応フォーマットの場合
+        # 未対応フォーマットの場合
         else:
             # すべて初期化
             self.filepath = ''
@@ -244,7 +249,7 @@ class AudioFile():
         #self.tags['TPE2'] = TPE2(encoding=1, text=self.albumartist)
 
         self.tags.delall('COMM')
-        self.tags['COMM'] = id3.COMM(encoding=1, text=self.comment)
+        self.tags['COMM'] = id3.COMM(encoding=1, lang='eng', text=self.comment)
 
         # アートワーク書き換え
         if not self.artwork_url == '':   # アートワーク画像のURLがある場合

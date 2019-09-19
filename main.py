@@ -18,7 +18,7 @@ def ResourcePath(filename):
 
 class MyFrame(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, None, title="FreeDLHelper v1.0", size=(900, 550))
+        wx.Frame.__init__(self, None, title="FreeDLHelper v1.1", size=(900, 550))
 
         # ** ステータスバー **
         self.CreateStatusBar()
@@ -41,10 +41,10 @@ class MyFrame(wx.Frame):
         self.ai_panel = AudioInfoPanel(root_panel)
         # アートワーク
         self.aw_panel = ArtworkPanel(root_panel, imgsize=(300, 300))
-        # ファイルパス
-        self.fr_panel = FileRefPanel(root_panel, af)
         # URL入力欄
         self.url_panel = URLTextPanel(root_panel)
+        # ファイルパス
+        self.fr_panel = FileRefPanel(root_panel, sc, af)
         # ボタン
         self.bt_panel = ButtonPanel(root_panel, sc, af)
 
@@ -60,7 +60,7 @@ class MyFrame(wx.Frame):
         root_layout.Fit(root_panel)
 
         # ドラッグ&ドロップの設定
-        fdt = MyFileDropTarget(root_panel, af)
+        fdt = MyFileDropTarget(root_panel, sc, af)
         root_panel.SetDropTarget(fdt)
 
         self.Show()
@@ -70,21 +70,22 @@ class MyFrame(wx.Frame):
 class FileRefPanel(wx.Panel):
     """ ファイルパス入力部分 """
 
-    def __init__(self, parent, af):
+    def __init__(self, parent, sc, af):
         super().__init__(parent)
 
-        # audiofileのインスタンス(参照)
+        # scinfo, audiofileのインスタンス(参照)
+        self.sc = sc
         self.af = af
 
         # AudioInfoPanel内のテキストボックス
-        self.tc_title = parent.GetParent().ai_panel.tc_title
-        self.tc_album = parent.GetParent().ai_panel.tc_album
-        self.tc_artist = parent.GetParent().ai_panel.tc_artist
+        self.cb_title = parent.GetParent().ai_panel.cb_title
+        self.cb_album = parent.GetParent().ai_panel.cb_album
+        self.cb_artist = parent.GetParent().ai_panel.cb_artist
         self.cb_genre = parent.GetParent().ai_panel.cb_genre
         self.tc_comment = parent.GetParent().ai_panel.tc_comment
 
-        # ジャンルリスト
-        self.genrelist = parent.GetParent().ai_panel.genrelist
+        # URL入力欄
+        self.tc_url = parent.GetParent().url_panel.tc_url
 
         # ArtworkPanelの画像設定メソッド
         self.set_img = parent.GetParent().aw_panel.set_img
@@ -115,8 +116,11 @@ class FileRefPanel(wx.Panel):
         ダイアログ表示・パス取得イベント
         """
 
-        # ジャンルリストを初期化
-        self.genrelist = ['']
+        # 曲情報のドロップダウンリストを初期化
+        titlelist = ['']
+        albumlist = ['']
+        artistlist = ['']
+        genrelist = ['']
 
         # ダイアログ設定
         file_filter = \
@@ -127,6 +131,10 @@ class FileRefPanel(wx.Panel):
 
         # ファイルが選択された場合
         if dialog.ShowModal() == wx.ID_OK:
+
+            # アートワークURLを初期化
+            self.sc.artwork_url = ''
+
             # パスを取得
             filepath = dialog.GetPath()
 
@@ -138,7 +146,8 @@ class FileRefPanel(wx.Panel):
                 self.set_img(self.af.artwork)
 
                 # ジャンルを入力
-                self.cb_genre.SetItems(self.genrelist)
+                genrelist = [self.af.genre]
+                self.cb_genre.SetItems(genrelist)
                 self.cb_genre.SetValue(self.af.genre)
 
                 self.GetTopLevelParent().SetStatusText(
@@ -151,19 +160,31 @@ class FileRefPanel(wx.Panel):
                 self.set_img()
 
                 # ジャンルを初期状態に
-                self.cb_genre.SetItems(self.genrelist)
+                self.cb_genre.SetItems(genrelist)
                 self.cb_genre.SetValue('選択してください')
 
                 self.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
 
             # テキストボックスにパス設定
             self.tc_file.SetValue(self.af.filepath)
+            
+            # ジャンル以外のドロップダウンリストを更新
+            titlelist = [self.af.title]
+            albumlist = [self.af.album]
+            artistlist = [self.af.artist]
+
+            self.cb_title.SetItems(titlelist)
+            self.cb_album.SetItems(albumlist)
+            self.cb_artist.SetItems(artistlist)
 
             # 曲情報を入力
-            self.tc_title.SetValue(self.af.title)
-            self.tc_album.SetValue(self.af.album)
-            self.tc_artist.SetValue(self.af.artist)
+            self.cb_title.SetValue(self.af.title)
+            self.cb_album.SetValue(self.af.album)
+            self.cb_artist.SetValue(self.af.artist)
             self.tc_comment.SetValue(self.af.comment)
+
+            # URL入力欄をクリア
+            self.tc_url.Clear()
 
         # ダイアログを破棄
         dialog.Destroy()
@@ -172,20 +193,24 @@ class FileRefPanel(wx.Panel):
 class MyFileDropTarget(wx.FileDropTarget):
     """ ドラッグ&ドロップ """
 
-    def __init__(self, parent, af):
+    def __init__(self, parent, sc, af):
         wx.FileDropTarget.__init__(self)
 
         self.parent = parent
 
-        # audiofileのインスタンス(参照)
+        # scinfo, audiofileのインスタンス(参照)
+        self.sc = sc
         self.af = af
 
         # AudioInfoPanel内のテキストボックス
-        self.tc_title = parent.GetParent().ai_panel.tc_title
-        self.tc_album = parent.GetParent().ai_panel.tc_album
-        self.tc_artist = parent.GetParent().ai_panel.tc_artist
+        self.cb_title = parent.GetParent().ai_panel.cb_title
+        self.cb_album = parent.GetParent().ai_panel.cb_album
+        self.cb_artist = parent.GetParent().ai_panel.cb_artist
         self.cb_genre = parent.GetParent().ai_panel.cb_genre
         self.tc_comment = parent.GetParent().ai_panel.tc_comment
+
+        # URL入力欄
+        self.tc_url = parent.GetParent().url_panel.tc_url
 
         # FileRefPanelのテキストボックス
         self.tc_file = parent.GetParent().fr_panel.tc_file
@@ -195,8 +220,14 @@ class MyFileDropTarget(wx.FileDropTarget):
 
     def OnDropFiles(self, x, y, filenames):
 
-        # ジャンルリストを初期化
-        self.genrelist = ['']
+        # 各リストを初期化
+        titlelist = ['']
+        albumlist = ['']
+        artistlist = ['']
+        genrelist = ['']
+
+        # アートワークURLを初期化
+        self.sc.artwork_url = ''
 
         # D&Dされたパスを取得
         dnd_filepath = filenames[0]
@@ -209,12 +240,12 @@ class MyFileDropTarget(wx.FileDropTarget):
             self.set_img(self.af.artwork)
 
             # ジャンルを入力
-            self.cb_genre.SetItems(self.genrelist)
+            genrelist = [self.af.genre]
+            self.cb_genre.SetItems(genrelist)
             self.cb_genre.SetValue(self.af.genre)
 
             self.parent.GetTopLevelParent().SetStatusText(
                 'ファイルの読み込みが完了しました。SoundCloudのURLを入力し、"情報取得"を押してください')
-            self.cb_genre.SetValue(self.af.genre)
 
         except audiofile.FileFormatError:
             wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
@@ -223,7 +254,7 @@ class MyFileDropTarget(wx.FileDropTarget):
             self.set_img()
 
             # ジャンルを初期状態に
-            self.cb_genre.SetItems(self.genrelist)
+            self.cb_genre.SetItems(genrelist)
             self.cb_genre.SetValue('選択してください')
 
             self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
@@ -231,11 +262,23 @@ class MyFileDropTarget(wx.FileDropTarget):
         # テキストボックスにパス設定
         self.tc_file.SetValue(self.af.filepath)
 
+        # ジャンル以外のドロップダウンリストを更新
+        titlelist = [self.af.title]
+        albumlist = [self.af.album]
+        artistlist = [self.af.artist]
+
+        self.cb_title.SetItems(titlelist)
+        self.cb_album.SetItems(albumlist)
+        self.cb_artist.SetItems(artistlist)
+
         # 曲情報を入力
-        self.tc_title.SetValue(self.af.title)
-        self.tc_album.SetValue(self.af.album)
-        self.tc_artist.SetValue(self.af.artist)
+        self.cb_title.SetValue(self.af.title)
+        self.cb_album.SetValue(self.af.album)
+        self.cb_artist.SetValue(self.af.artist)
         self.tc_comment.SetValue(self.af.comment)
+
+        # URL入力欄をクリア
+        self.tc_url.Clear()
 
         return True
 
@@ -308,37 +351,33 @@ class AudioInfoPanel(wx.Panel):
 
     Attributes
     ----------
-    tc_title : wx.TextCtrl
+    cb_title : wx.ComboBox
         タイトルのテキストボックス
-    tc_album : wx.TextCtrl
+    cb_album : wx.ComboBox
         アルバム名のテキストボックス
-    tc_artist : wx.TextCtrl
+    cb_artist : wx.ComboBox
         アーティスト名のテキストボックス
     cb_genre : wx.ComboBox
         ジャンル一覧
     tc_comment : wx.TextCtrl
         コメントのテキストボックス
-    genrelist : list[str]
-        ジャンルリスト
     """
 
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.genrelist = ['']
-
         # ** 各項目 **
         st_title = wx.StaticText(self, -1, 'タイトル: ')
-        self.tc_title = wx.TextCtrl(self, -1)
+        self.cb_title = wx.ComboBox(self, -1, choices=[''], style=wx.CB_DROPDOWN)
 
         st_album = wx.StaticText(self, -1, 'アルバム名: ')
-        self.tc_album = wx.TextCtrl(self, -1)
+        self.cb_album = wx.ComboBox(self, -1, choices=[''], style=wx.CB_DROPDOWN)
 
         st_artist = wx.StaticText(self, -1, 'アーティスト名: ')
-        self.tc_artist = wx.TextCtrl(self, -1)
+        self.cb_artist = wx.ComboBox(self, -1, choices=[''], style=wx.CB_DROPDOWN)
 
         st_genre = wx.StaticText(self, -1, 'ジャンル: ')
-        self.cb_genre = wx.ComboBox(self, -1, '選択してください', choices=self.genrelist, style=wx.CB_DROPDOWN)
+        self.cb_genre = wx.ComboBox(self, -1, '選択してください', choices=[''], style=wx.CB_DROPDOWN)
 
         st_comment = wx.StaticText(self, -1, 'コメント: ')
         self.tc_comment = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE)
@@ -349,11 +388,11 @@ class AudioInfoPanel(wx.Panel):
         # 配置
         grid = wx.FlexGridSizer(cols=2, gap=(0, 0))
         grid.Add(st_title, flag=wx.ALL, border=10)
-        grid.Add(self.tc_title, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(self.cb_title, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(st_album, flag=wx.ALL, border=10)
-        grid.Add(self.tc_album, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(self.cb_album, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(st_artist, flag=wx.ALL, border=10)
-        grid.Add(self.tc_artist, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(self.cb_artist, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(st_genre, flag=wx.ALL, border=10)
         grid.Add(self.cb_genre, flag=wx.EXPAND | wx.ALL, border=10)
         grid.Add(st_comment, flag=wx.ALL, border=10)
@@ -385,10 +424,14 @@ class URLTextPanel(wx.Panel):
 
         # ** 各項目 **
         self.tc_url = wx.TextCtrl(self, -1)
+        bt_url_clear = wx.Button(self, -1, label='クリア')
+
+        bt_url_clear.Bind(wx.EVT_BUTTON, self.click_bt_url_clear)
 
         # 配置
-        grid = wx.FlexGridSizer(cols=1, gap=(0, 0))
+        grid = wx.FlexGridSizer(cols=2, gap=(0, 0))
         grid.Add(self.tc_url, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(bt_url_clear, flag=wx.ALL, border=10)
 
         # 引き伸ばし
         grid.AddGrowableCol(0)
@@ -396,6 +439,9 @@ class URLTextPanel(wx.Panel):
         layout = wx.StaticBoxSizer(s_box, wx.HORIZONTAL)
         layout.Add(grid, 1)
         self.SetSizer(layout)
+
+    def click_bt_url_clear(self, event):
+        self.tc_url.Clear()
 
 
 class ButtonPanel(wx.Panel):
@@ -409,14 +455,11 @@ class ButtonPanel(wx.Panel):
         self.af = af
 
         # AudioInfoPanel内のテキストボックス
-        self.tc_title = parent.GetParent().ai_panel.tc_title
-        self.tc_album = parent.GetParent().ai_panel.tc_album
-        self.tc_artist = parent.GetParent().ai_panel.tc_artist
+        self.cb_title = parent.GetParent().ai_panel.cb_title
+        self.cb_album = parent.GetParent().ai_panel.cb_album
+        self.cb_artist = parent.GetParent().ai_panel.cb_artist
         self.cb_genre = parent.GetParent().ai_panel.cb_genre
         self.tc_comment = parent.GetParent().ai_panel.tc_comment
-
-        # ジャンルリスト
-        self.genrelist = parent.GetParent().ai_panel.genrelist
 
         # URLPanelのテキストボックス
         self.tc_url = parent.GetParent().url_panel.tc_url
@@ -443,6 +486,12 @@ class ButtonPanel(wx.Panel):
     def click_bt_get(self, event):
         """ SoundCloudから情報取得 """
 
+        # 各リストを初期化
+        titlelist = ['']
+        albumlist = ['']
+        artistlist = ['']
+        genrelist = ['']
+
         if self.af.filepath == '':
             wx.MessageBox('ファイルを先に選択してください', 'ファイル未選択', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('音声ファイルをドラッグ&ドロップしてください')
@@ -458,18 +507,37 @@ class ButtonPanel(wx.Panel):
 
             self.sc.get(url)
 
-            # ジャンルリストを更新
-            self.genrelist = self.sc.taglist
+            # ドロップダウンリストを更新
+            titlelist = [self.af.title] + [self.sc.title]
+            albumlist = [self.af.album]
+            artistlist = [self.af.artist] + [self.sc.artist]
+            genrelist = [self.af.genre] + [self.sc.maintag] + self.sc.taglist
 
-            # 曲情報を入力
-            self.tc_title.SetValue(self.sc.title)
-            self.tc_artist.SetValue(self.sc.artist)
-            self.cb_genre.SetItems(self.genrelist)
+            self.cb_title.SetItems(titlelist)
+            self.cb_album.SetItems(albumlist)
+            self.cb_artist.SetItems(artistlist)
+            self.cb_genre.SetItems(genrelist)
 
-            if self.sc.maintag == '':
-                self.cb_genre.SetLabel('選択してください')
+            # 曲情報を入力: 元の情報は保持
+            if self.af.title == '':
+                self.cb_title.SetValue(self.sc.title)
             else:
-                self.cb_genre.SetLabel(self.sc.maintag)
+                self.cb_title.SetValue(self.af.title)
+            
+            self.cb_album.SetValue(self.af.album)
+
+            if self.af.artist == '':
+                self.cb_artist.SetValue(self.sc.artist)
+            else:
+                self.cb_artist.SetValue(self.af.artist)
+
+            if self.af.genre == '':
+                if self.sc.maintag == '':
+                    self.cb_genre.SetLabel('選択してください')
+                else:
+                    self.cb_genre.SetLabel(self.sc.maintag)
+            else:
+                self.cb_genre.SetLabel(self.af.genre)
 
             # 既にコメントがあるときは、改行してURL挿入
             if self.tc_comment.GetValue() != '':
@@ -504,9 +572,9 @@ class ButtonPanel(wx.Panel):
             return
 
         # 曲情報を設定
-        self.af.title = self.tc_title.GetValue()
-        self.af.album = self.tc_album.GetValue()
-        self.af.artist = self.tc_artist.GetValue()
+        self.af.title = self.cb_title.GetValue()
+        self.af.album = self.cb_album.GetValue()
+        self.af.artist = self.cb_artist.GetValue()
         self.af.genre = self.cb_genre.GetValue()
         self.af.comment = self.tc_comment.GetValue()
         self.af.artwork_url = self.sc.artwork_url
@@ -515,10 +583,15 @@ class ButtonPanel(wx.Panel):
             self.af.edit()
             wx.MessageBox('書き込みが完了しました', '書き込み完了', wx.OK)
             self.GetTopLevelParent().SetStatusText('書き込み完了')
+        
+        except FileNotFoundError:
+            wx.MessageBox('ファイルが見つからないため、曲情報の書き込みができませんでした', 
+                        '書き込みエラー', wx.ICON_ERROR)
+            self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました: ファイルが見つかりません')
 
         except audiofile.URLOpenError:
             wx.MessageBox('オフラインか、その他の理由で画像の書き込みができませんでした',
-                          '書き込みエラー', wx.ICON_ERROR)
+                        '書き込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました: オンラインになっているか確認してください')
 
         except:
