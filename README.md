@@ -19,6 +19,8 @@ macOSでの動作は確認していません
 > `py -m pip install mutagen`
 - wxPython http://wxPython.org/
 > `py -m pip install wxpython`
+- pyperclip https://github.com/asweigart/pyperclip
+> `py -m pip install pyperclip`
 
 ## 使用方法
 1. 上記のライブラリをインストールし、`py main.py` を実行
@@ -40,6 +42,7 @@ macOSでの動作は確認していません
     - ID3タグのないAIFFファイルが読み込めない問題を修正
 - 2019/09/xx v1.2
     - MP4ファイルの対応拡張子を追加(.mp4, .m4b, .m4r)
+    - URL入力欄に貼り付けボタンを設置、クリップボードのURLをワンクリックで貼り付けできるように
 
 ## 確認している問題・バグ
 - 音声ファイルを読み込んだ際、曲情報が文字化けする
