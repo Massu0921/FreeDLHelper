@@ -86,8 +86,11 @@ class AudioFile():
         elif self.fileformat == '.flac' \
                 or self.fileformat == '.fla':
             self.flacinfo()
-        # MP4(m4a)
-        elif self.fileformat == '.m4a':
+        # MP4
+        elif self.fileformat == '.m4a' \
+                or self.fileformat == '.m4r' \
+                or self.fileformat == '.mp4' \
+                or self.fileformat == '.m4b':
             self.mp4info()
         # ファイルが未存在、未対応フォーマットの場合
         else:
@@ -222,8 +225,11 @@ class AudioFile():
         elif self.fileformat == '.flac' \
                 or self.fileformat == '.fla':
             self.flacedit()
-        # MP4(m4a)
-        elif self.fileformat == '.m4a':
+        # MP4
+        elif self.fileformat == '.m4a' \
+                or self.fileformat == '.m4r' \
+                or self.fileformat == '.mp4' \
+                or self.fileformat == '.m4b':
             self.mp4edit()
         # 未対応フォーマットの場合
         else:
