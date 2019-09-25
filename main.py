@@ -18,7 +18,7 @@ def ResourcePath(filename):
 
 class MyFrame(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, None, title="FreeDLHelper v1.1.1", size=(900, 550))
+        wx.Frame.__init__(self, None, title="FreeDLHelper v1.2b", size=(900, 550))
 
         # ** ステータスバー **
         self.CreateStatusBar()
