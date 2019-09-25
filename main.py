@@ -5,6 +5,7 @@ import wx
 import os
 import sys
 import io
+import pyperclip
 import audiofile
 import scinfo
 from urllib.request import urlopen
@@ -424,13 +425,16 @@ class URLTextPanel(wx.Panel):
 
         # ** 各項目 **
         self.tc_url = wx.TextCtrl(self, -1)
+        bt_url_paste = wx.Button(self, -1, label='貼り付け')
         bt_url_clear = wx.Button(self, -1, label='クリア')
 
+        bt_url_paste.Bind(wx.EVT_BUTTON, self.click_bt_url_paste)
         bt_url_clear.Bind(wx.EVT_BUTTON, self.click_bt_url_clear)
 
         # 配置
-        grid = wx.FlexGridSizer(cols=2, gap=(0, 0))
+        grid = wx.FlexGridSizer(cols=3, gap=(0, 0))
         grid.Add(self.tc_url, flag=wx.EXPAND | wx.ALL, border=10)
+        grid.Add(bt_url_paste, flag=wx.ALL, border=10)
         grid.Add(bt_url_clear, flag=wx.ALL, border=10)
 
         # 引き伸ばし
@@ -439,8 +443,12 @@ class URLTextPanel(wx.Panel):
         layout = wx.StaticBoxSizer(s_box, wx.HORIZONTAL)
         layout.Add(grid, 1)
         self.SetSizer(layout)
+    
+    def click_bt_url_paste(self, event):
+        self.tc_url.SetValue(pyperclip.paste())
 
     def click_bt_url_clear(self, event):
+        """ URL入力欄をクリア """
         self.tc_url.Clear()
 
 
