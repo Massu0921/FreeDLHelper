@@ -1,4 +1,4 @@
-# FreeDLHelper v1.1.1
+# FreeDLHelper v1.2
 SoundCloudから楽曲情報・アートワーク画像を取得し、Free DLなどした音声ファイルに不足情報を追加するツールです。
 
 <img src='Resources/fdh_window.png' alt='画面'>
@@ -19,6 +19,8 @@ macOSでの動作は確認していません
 > `py -m pip install mutagen`
 - wxPython http://wxPython.org/
 > `py -m pip install wxpython`
+- pyperclip https://github.com/asweigart/pyperclip
+> `py -m pip install pyperclip`
 
 ## 使用方法
 1. 上記のライブラリをインストールし、`py main.py` を実行
@@ -26,7 +28,7 @@ macOSでの動作は確認していません
 3. SoundCloudの対象曲のURLを貼り付け、"情報取得"を押して曲情報を取得
 4. 取得した曲情報を確認・編集し、"書き込み"を押して音声ファイルに曲情報を書き込む
 
-## 更新情報 (v1.1.1)
+## 更新情報 (v1.2)
 - 2019/09/17 v1.0
     - ソースコードのみリリース
 - 2019/09/19 v1.1
@@ -38,6 +40,10 @@ macOSでの動作は確認していません
     - ソフトによってコメントが表示されない問題を修正
 - 2019/09/20 v1.1.1
     - ID3タグのないAIFFファイルが読み込めない問題を修正
+- 2019/09/29 v1.2
+    - MP4ファイルの対応拡張子を追加(.mp4, .m4b, .m4r)
+    - URL入力欄に貼り付けボタンを設置、クリップボードのURLをワンクリックで貼り付けできるように
+    - flac, mp4のタグのkeyがないときに半角スペースが入力される問題を修正
 
 ## 確認している問題・バグ
 - 音声ファイルを読み込んだ際、曲情報が文字化けする

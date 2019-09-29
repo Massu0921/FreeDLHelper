@@ -86,8 +86,11 @@ class AudioFile():
         elif self.fileformat == '.flac' \
                 or self.fileformat == '.fla':
             self.flacinfo()
-        # MP4(m4a)
-        elif self.fileformat == '.m4a':
+        # MP4
+        elif self.fileformat == '.m4a' \
+                or self.fileformat == '.m4r' \
+                or self.fileformat == '.mp4' \
+                or self.fileformat == '.m4b':
             self.mp4info()
         # ファイルが未存在、未対応フォーマットの場合
         else:
@@ -131,11 +134,11 @@ class AudioFile():
 
         # 各項目取得
         # キーが存在しなかった場合: 半角空白に置き換え
-        self.title = self.tags.get('TITLE', ' ')[0]
-        self.album = self.tags.get('ALBUM', ' ')[0]
-        self.artist = self.tags.get('ARTIST', ' ')[0]
-        self.genre = self.tags.get('GENRE', ' ')[0]
-        self.comment = self.tags.get('COMMENT', ' ')[0]
+        self.title = self.tags.get('TITLE', ' ')[0].strip()
+        self.album = self.tags.get('ALBUM', ' ')[0].strip()
+        self.artist = self.tags.get('ARTIST', ' ')[0].strip()
+        self.genre = self.tags.get('GENRE', ' ')[0].strip()
+        self.comment = self.tags.get('COMMENT', ' ')[0].strip()
 
         artworks = self.tags.pictures
         artwork = None
@@ -152,11 +155,11 @@ class AudioFile():
         self.tags = mp4.MP4(self.filepath)
         
         # 各項目取得
-        self.title = self.tags.get('\xa9nam', ' ')[0]
-        self.album = self.tags.get('\xa9alb', ' ')[0]
-        self.artist = self.tags.get('\xa9ART', ' ')[0]
-        self.genre = self.tags.get('\xa9gen', ' ')[0]
-        self.comment = self.tags.get('\xa9cmt', ' ')[0]
+        self.title = self.tags.get('\xa9nam', ' ')[0].strip()
+        self.album = self.tags.get('\xa9alb', ' ')[0].strip()
+        self.artist = self.tags.get('\xa9ART', ' ')[0].strip()
+        self.genre = self.tags.get('\xa9gen', ' ')[0].strip()
+        self.comment = self.tags.get('\xa9cmt', ' ')[0].strip()
 
         # アートワーク取得
         artworks = self.tags.get('covr')    # list or None
@@ -222,8 +225,11 @@ class AudioFile():
         elif self.fileformat == '.flac' \
                 or self.fileformat == '.fla':
             self.flacedit()
-        # MP4(m4a)
-        elif self.fileformat == '.m4a':
+        # MP4
+        elif self.fileformat == '.m4a' \
+                or self.fileformat == '.m4r' \
+                or self.fileformat == '.mp4' \
+                or self.fileformat == '.m4b':
             self.mp4edit()
         # 未対応フォーマットの場合
         else:
