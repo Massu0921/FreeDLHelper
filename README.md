@@ -10,17 +10,17 @@ macOSでの動作は確認していません
 
 ## インストールが必要なライブラリ
 - Requests https://2.python-requests.org/en/master/
-> `py -m pip install requests`
+> `pip3 install requests`
 - lxml https://lxml.de/
-> `py -m pip install lxml`
+> `pip3 install lxml`
 - regex https://bitbucket.org/mrabarnett/mrab-regex/src/default/
-> `py -m pip install regex`
+> `pip3 install regex`
 - mutagen https://github.com/quodlibet/mutagen
-> `py -m pip install mutagen`
+> `pip3 install mutagen`
 - wxPython http://wxPython.org/
-> `py -m pip install wxpython`
+> `pip3 install wxpython`
 - pyperclip https://github.com/asweigart/pyperclip
-> `py -m pip install pyperclip`
+> `pip3 install pyperclip`
 
 ## 使用方法
 1. 上記のライブラリをインストールし、`py main.py` を実行
