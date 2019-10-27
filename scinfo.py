@@ -90,7 +90,8 @@ class SoundCloudInfo():
         self.maintag = str(self.root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/',''))
 
         # タグリスト
-        tags = str(self.root.xpath('string(//script[8])'))
+        #tags = str(self.root.xpath('string(//script)')) # 取得不可
+        tags = trg_html.split('<script>!function')[1]
         self.taglist = self.org_subtag(tags)
 
         # アップロード日時
