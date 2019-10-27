@@ -78,30 +78,31 @@ class SoundCloudInfo():
 
         # 日本語が文字化けするので、ここでデコード
         trg_html = bytes(trg_html, 'iso-8859-1').decode('utf-8')
-        self.root = lxml.html.fromstring(trg_html)
+        root = lxml.html.fromstring(trg_html)
 
         # タイトル
-        self.title = str(self.root.xpath('string(//img/@alt)'))
+        self.title = str(root.xpath('string(//img/@alt)'))
 
         # アーティスト名
-        self.artist = str(self.root.xpath('string(//div[@itemprop="byArtist"]/meta/@content)'))
+        self.artist = str(root.xpath('string(//div[@itemprop="byArtist"]/meta/@content)'))
 
         # メインタグ
-        self.maintag = str(self.root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/',''))
+        self.maintag = str(root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/',''))
 
         # タグリスト
-        tags = str(self.root.xpath('string(//script[8])'))
+        #tags = str(root.xpath('string(//script)')) # 取得不可
+        tags = trg_html.split('<script>!function')[1]
         self.taglist = self.org_subtag(tags)
 
         # アップロード日時
-        uploaded = self.root.xpath('string(//time)')
+        uploaded = root.xpath('string(//time)')
         self.uploaded = str(uploaded[0:10])
 
         # 概要欄
-        self.overview = str(self.root.xpath('string(//meta[@property="og:description"]/@content)'))
+        self.overview = str(root.xpath('string(//meta[@property="og:description"]/@content)'))
 
         # アートワークURL
-        self.artwork_url = str(self.root.xpath('normalize-space(//meta[@property="og:image"]/@content)'))
+        self.artwork_url = str(root.xpath('normalize-space(//meta[@property="og:image"]/@content)'))
 
     def org_subtag(self,tags):
         """
@@ -129,16 +130,6 @@ class SoundCloudInfo():
             
             # スペース入りタグの'\','#' を除去
             space_taglist[i] = space_taglist[i].strip('\\"')
-
-            # エスケープされた文字列を検出
-            escape_str = regex.findall('\\\\u....', space_taglist[i])
-
-            # エスケープ文字列を通常の文字列で置き換え
-            for j in range(len(escape_str)):
-                # 一旦encode -> decode
-                escape_str_dec = escape_str[j].encode().decode('unicode-escape')
-                space_taglist[i] = space_taglist[i].replace(escape_str[j], escape_str_dec)
-
             
         # タグを仕分ける(list化)
         taglist = tags.split(' ')
@@ -148,6 +139,16 @@ class SoundCloudInfo():
 
         # スペース入りタグリストと連結
         new_taglist += space_taglist
+
+        for i in range(len(new_taglist)):
+            # エスケープされた文字列を検出
+            escape_str = regex.findall('\\\\u....', new_taglist[i])
+
+            # エスケープ文字列を通常の文字列で置き換え
+            for j in range(len(escape_str)):
+                # 一旦encode -> decode
+                escape_str_dec = escape_str[j].encode().decode('unicode-escape')
+                new_taglist[i] = new_taglist[i].replace(escape_str[j], escape_str_dec)
                 
         return new_taglist
 
