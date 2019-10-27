@@ -130,16 +130,6 @@ class SoundCloudInfo():
             
             # スペース入りタグの'\','#' を除去
             space_taglist[i] = space_taglist[i].strip('\\"')
-
-            # エスケープされた文字列を検出
-            escape_str = regex.findall('\\\\u....', space_taglist[i])
-
-            # エスケープ文字列を通常の文字列で置き換え
-            for j in range(len(escape_str)):
-                # 一旦encode -> decode
-                escape_str_dec = escape_str[j].encode().decode('unicode-escape')
-                space_taglist[i] = space_taglist[i].replace(escape_str[j], escape_str_dec)
-
             
         # タグを仕分ける(list化)
         taglist = tags.split(' ')
@@ -149,6 +139,16 @@ class SoundCloudInfo():
 
         # スペース入りタグリストと連結
         new_taglist += space_taglist
+
+        for i in range(len(new_taglist)):
+            # エスケープされた文字列を検出
+            escape_str = regex.findall('\\\\u....', new_taglist[i])
+
+            # エスケープ文字列を通常の文字列で置き換え
+            for j in range(len(escape_str)):
+                # 一旦encode -> decode
+                escape_str_dec = escape_str[j].encode().decode('unicode-escape')
+                new_taglist[i] = new_taglist[i].replace(escape_str[j], escape_str_dec)
                 
         return new_taglist
 
