@@ -28,7 +28,7 @@ class MyFrame(wx.Frame):
 
         # ** アイコン **
         #tbi = wx.adv.TaskBarIcon()
-        icon = wx.Icon(ResourcePath('Resources/fdh.ico'), wx.BITMAP_TYPE_ICO)
+        icon = wx.Icon(ResourcePath('Resources/fdh_v2.ico'), wx.BITMAP_TYPE_ICO)
         self.SetIcon(icon)
 
         # scinfo, audiofileのインスタンス作成
