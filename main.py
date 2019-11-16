@@ -126,7 +126,7 @@ class FileRefPanel(wx.Panel):
         # ダイアログ設定
         file_filter = \
             "audio file(*.aif;*.aiff;*.aifc;*.afc;*.flac;*.fla;*.mp3;*.m4a) \
-            | *.aif;*.aiff;*.aifc;*.afc;*.flac;*.fla;*.mp3;*.m4a \
+            | *.aif;*.aiff;*.aifc;*.afc;*.flac;*.fla;*.mp3;*.m4a; \
             | all file(*.*) | *.*"
         dialog = wx.FileDialog(self, 'ファイルを選択してください', wildcard=file_filter)
 
