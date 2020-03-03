@@ -547,8 +547,11 @@ class ButtonPanel(wx.Panel):
             else:
                 self.cb_genre.SetLabel(self.af.genre)
 
+            # すでにSCのURLがコメントにある場合
+            if url in self.tc_comment.GetValue():
+                url = ''
             # 既にコメントがあるときは、改行してURL挿入
-            if self.tc_comment.GetValue() != '':
+            elif self.tc_comment.GetValue() != '':
                 url = '\n' + url
             self.tc_comment.AppendText(url)
 
