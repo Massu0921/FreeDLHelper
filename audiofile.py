@@ -171,6 +171,8 @@ class AudioFile():
         # bytesへ変換
         if artwork:
             self.artwork = bytes(artwork)
+        else:
+            self.artwork = None
 
     def id3info(self):
         """ ID3タグを取得 """

@@ -19,7 +19,7 @@ def ResourcePath(filename):
 
 class MyFrame(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, None, title="FreeDLHelper v1.2.1", size=(900, 550))
+        wx.Frame.__init__(self, None, title="FreeDLHelper v1.3", size=(900, 550))
 
         # ** ステータスバー **
         self.CreateStatusBar()
@@ -28,7 +28,7 @@ class MyFrame(wx.Frame):
 
         # ** アイコン **
         #tbi = wx.adv.TaskBarIcon()
-        icon = wx.Icon(ResourcePath('Resources/fdh.ico'), wx.BITMAP_TYPE_ICO)
+        icon = wx.Icon(ResourcePath('Resources/fdh_v2.ico'), wx.BITMAP_TYPE_ICO)
         self.SetIcon(icon)
 
         # scinfo, audiofileのインスタンス作成
@@ -126,7 +126,7 @@ class FileRefPanel(wx.Panel):
         # ダイアログ設定
         file_filter = \
             "audio file(*.aif;*.aiff;*.aifc;*.afc;*.flac;*.fla;*.mp3;*.m4a) \
-            | *.aif;*.aiff;*.aifc;*.afc;*.flac;*.fla;*.mp3;*.m4a \
+            | *.aif;*.aiff;*.aifc;*.afc;*.flac;*.fla;*.mp3;*.m4a; \
             | all file(*.*) | *.*"
         dialog = wx.FileDialog(self, 'ファイルを選択してください', wildcard=file_filter)
 
@@ -547,8 +547,11 @@ class ButtonPanel(wx.Panel):
             else:
                 self.cb_genre.SetLabel(self.af.genre)
 
+            # すでにSCのURLがコメントにある場合
+            if url in self.tc_comment.GetValue():
+                url = ''
             # 既にコメントがあるときは、改行してURL挿入
-            if self.tc_comment.GetValue() != '':
+            elif self.tc_comment.GetValue() != '':
                 url = '\n' + url
             self.tc_comment.AppendText(url)
 
