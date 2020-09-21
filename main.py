@@ -141,6 +141,7 @@ class FileRefPanel(wx.Panel):
 
             # ファイル読み込み
             try:
+                self.GetTopLevelParent().SetStatusText('ファイルの読み込み・変換中...')
                 self.af.info(filepath)
 
                 # アートワークを更新
@@ -247,6 +248,7 @@ class MyFileDropTarget(wx.FileDropTarget):
 
         # ファイル読み込み
         try:
+            self.GetTopLevelParent().SetStatusText('ファイルの読み込み・変換中...')
             self.af.info(dnd_filepath)
 
             # アートワークを更新
