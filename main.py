@@ -126,7 +126,7 @@ class FileRefPanel(wx.Panel):
         # ダイアログ設定
         file_filter = \
             "audio file(*.wav;*.aif;*.aiff;*.aifc;*.afc;*.flac;*.fla;*.mp3;*.m4a) \
-            | *.aif;*.aiff;*.aifc;*.afc;*.flac;*.fla;*.mp3;*.m4a; \
+            | *.wav;*.aif;*.aiff;*.aifc;*.afc;*.flac;*.fla;*.mp3;*.m4a; \
             | all file(*.*) | *.*"
         dialog = wx.FileDialog(self, 'ファイルを選択してください', wildcard=file_filter)
 
@@ -152,10 +152,23 @@ class FileRefPanel(wx.Panel):
                 self.cb_genre.SetValue(self.af.genre)
 
                 self.GetTopLevelParent().SetStatusText(
-                    'ファイルの読み込みが完了しました。SoundCloudのURLを入力し、"情報取得"を押してください')
+                    'ファイルの読み込み・変換が完了しました。SoundCloudのURLを入力し、"情報取得"を押してください')
 
             except audiofile.FileFormatError:
                 wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
+                self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
+
+            except audiofile.FFmpegNotFoundError:
+                wx.MessageBox('ffmpegが見つかりませんでした', '変換エラー', wx.ICON_ERROR)
+                self.parent.GetTopLevelParent().SetStatusText('変換エラーです。ffmpegを本アプリと同じディレクトリにインストールしてください')
+
+            except audiofile.JsonLoadError:
+                wx.MessageBox('config.jsonの読み込みに失敗しました', '読み込みエラー', wx.ICON_ERROR)
+                self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。config.jsonを確認してください')
+
+            except audiofile.CommandFailedError:
+                wx.MessageBox('ffmpegのコマンド実行に失敗しました', '変換エラー', wx.ICON_ERROR)
+                self.parent.GetTopLevelParent().SetStatusText('変換エラーです。config.json内の設定を確認してください')
 
                 # アートワークを初期状態に
                 self.set_img()
@@ -164,7 +177,6 @@ class FileRefPanel(wx.Panel):
                 self.cb_genre.SetItems(genrelist)
                 self.cb_genre.SetValue('選択してください')
 
-                self.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
 
             # テキストボックスにパス設定
             self.tc_file.SetValue(self.af.filepath)
