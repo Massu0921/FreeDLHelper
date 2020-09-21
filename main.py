@@ -250,6 +250,19 @@ class MyFileDropTarget(wx.FileDropTarget):
 
         except audiofile.FileFormatError:
             wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
+            self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
+
+        except audiofile.FFmpegNotFoundError:
+            wx.MessageBox('ffmpegが見つかりませんでした', '変換エラー', wx.ICON_ERROR)
+            self.parent.GetTopLevelParent().SetStatusText('変換エラーです。ffmpegを本アプリと同じディレクトリにインストールしてください')
+
+        except audiofile.JsonLoadError:
+            wx.MessageBox('config.jsonの読み込みに失敗しました', '読み込みエラー', wx.ICON_ERROR)
+            self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。config.jsonを確認してください')
+
+        except audiofile.CommandFailedError:
+            wx.MessageBox('ffmpegのコマンド実行に失敗しました', '変換エラー', wx.ICON_ERROR)
+            self.parent.GetTopLevelParent().SetStatusText('変換エラーです。config.json内の設定を確認してください')
 
             # アートワークを初期状態に
             self.set_img()
@@ -257,8 +270,6 @@ class MyFileDropTarget(wx.FileDropTarget):
             # ジャンルを初期状態に
             self.cb_genre.SetItems(genrelist)
             self.cb_genre.SetValue('選択してください')
-
-            self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
 
         # テキストボックスにパス設定
         self.tc_file.SetValue(self.af.filepath)
