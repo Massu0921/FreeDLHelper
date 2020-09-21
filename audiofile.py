@@ -406,7 +406,7 @@ class AudioFile():
         old_filepath = self.filepath
         new_filepath = filename + '.' + config["format"]
 
-        command = 'ffmpeg -i \"' + old_filepath + '\" ' + \
+        command = 'ffmpeg -y -i \"' + old_filepath + '\" ' + \
             config["options"][config["format"]] + ' \"' + new_filepath + '\"'
         a = subprocess.call(command, shell=True)
 
