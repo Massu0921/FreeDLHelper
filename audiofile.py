@@ -17,6 +17,19 @@ class URLOpenError(Exception):
     """ URLを開けなかった場合に発生するエラー """
     pass
 
+class FFmpegNotFoundError(Exception):
+    """ FFmpeg非存在時のエラー """
+    pass
+
+class JsonLoadError(Exception):
+    """ jsonファイル読み込み時のエラー """
+    pass
+
+
+class CommandFailedError(Exception):
+    """ コマンド実行失敗時のエラー """
+    pass
+
 
 class AudioFile():
     """
@@ -116,7 +129,6 @@ class AudioFile():
             # エラー送出
             raise FileFormatError('未対応のフォーマットです')
 
-
     def mp3info(self):
         """ MP3(ID3)の曲情報を取得 """
         self.tags = mp3.MP3(self.filepath).tags
@@ -158,9 +170,9 @@ class AudioFile():
 
     def mp4info(self):
         """ MP4(m4a)の曲情報を取得 """
-        
+
         self.tags = mp4.MP4(self.filepath)
-        
+
         # 各項目取得
         self.title = self.tags.get('\xa9nam', ' ')[0].strip()
         self.album = self.tags.get('\xa9alb', ' ')[0].strip()
@@ -174,7 +186,7 @@ class AudioFile():
         if artworks:
             for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
                 pass
-        
+
         # bytesへ変換
         if artwork:
             self.artwork = bytes(artwork)
@@ -207,7 +219,6 @@ class AudioFile():
             self.artwork = artwork.data  # type: bytes
         else:
             self.artwork = None
-
 
     def edit(self):
         """
@@ -357,9 +368,10 @@ class AudioFile():
                 artwork_read = urlopen(self.artwork_url).read()
             except:
                 raise URLOpenError("画像を取得できません")
-            
+
             # 画像書き換え
-            pic = [mp4.MP4Cover(artwork_read, mp4.MP4Cover.FORMAT_JPEG)]    # list
+            # list
+            pic = [mp4.MP4Cover(artwork_read, mp4.MP4Cover.FORMAT_JPEG)]
             self.tags['covr'] = pic
 
         # 保存
@@ -371,34 +383,37 @@ class AudioFile():
         if artworks:
             for artwork in artworks:    # 抽出(最後に登録されている画像のみ)
                 pass
-        
+
         # bytesへ変換
         if artwork:
             self.artwork = bytes(artwork)
 
-    
     def convert(self):
-        """wav変換
-        """
+        """wav変換"""
+
+        # ffmpeg存在確認
+        a = subprocess.call("ffmpeg -version", shell=True)
+        if a == 1:
+            raise FFmpegNotFoundError("ffmpegが見つかりませんでした")
+
         try:
             with open('./config.json', 'r') as cf:
                 config = json.load(cf)
         except:
-            pass
-
+            raise JsonLoadError("jsonファイルを読み込めませんでした")
 
         filename = self.filepath.split(".")[-2]
         old_filepath = self.filepath
         new_filepath = filename + '.' + config["format"]
-        
-        command = 'ffmpeg -i \"' + old_filepath + '\" ' + config["options"][config["format"]] + ' \"' + new_filepath +'\"'
+
+        command = 'ffmpeg -i \"' + old_filepath + '\" ' + \
+            config["options"][config["format"]] + ' \"' + new_filepath + '\"'
         a = subprocess.call(command, shell=True)
-        
+
         if a == 0:
             self.info(new_filepath)
         else:
-            pass
-
+            raise CommandFailedError("コマンド実行に失敗しました")
 
     def output(self):
         """ テスト出力用 """
