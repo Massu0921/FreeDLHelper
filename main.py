@@ -157,19 +157,19 @@ class FileRefPanel(wx.Panel):
 
             except audiofile.FileFormatError:
                 wx.MessageBox('ファイルが未対応のフォーマットです', '読み込みエラー', wx.ICON_ERROR)
-                self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
+                self.GetTopLevelParent().SetStatusText('読み込みエラーです。ファイルを確認してください')
 
             except audiofile.FFmpegNotFoundError:
                 wx.MessageBox('ffmpegが見つかりませんでした', '変換エラー', wx.ICON_ERROR)
-                self.parent.GetTopLevelParent().SetStatusText('変換エラーです。ffmpegを本アプリと同じディレクトリにインストールしてください')
+                self.GetTopLevelParent().SetStatusText('変換エラーです。ffmpegを本アプリと同じディレクトリにインストールしてください')
 
             except audiofile.JsonLoadError:
                 wx.MessageBox('config.jsonの読み込みに失敗しました', '読み込みエラー', wx.ICON_ERROR)
-                self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。config.jsonを確認してください')
+                self.GetTopLevelParent().SetStatusText('読み込みエラーです。config.jsonを確認してください')
 
             except audiofile.CommandFailedError:
                 wx.MessageBox('ffmpegのコマンド実行に失敗しました', '変換エラー', wx.ICON_ERROR)
-                self.parent.GetTopLevelParent().SetStatusText('変換エラーです。config.json内の設定を確認してください')
+                self.GetTopLevelParent().SetStatusText('変換エラーです。config.json内の設定を確認してください')
 
                 # アートワークを初期状態に
                 self.set_img()
@@ -248,7 +248,7 @@ class MyFileDropTarget(wx.FileDropTarget):
 
         # ファイル読み込み
         try:
-            self.GetTopLevelParent().SetStatusText('ファイルの読み込み・変換中...')
+            self.parent.GetTopLevelParent().SetStatusText('ファイルの読み込み・変換中...')
             self.af.info(dnd_filepath)
 
             # アートワークを更新
