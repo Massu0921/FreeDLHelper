@@ -3,6 +3,9 @@ from urllib.request import urlopen
 from PIL import Image
 import io
 import os
+import subprocess
+import json
+
 
 # Exceptions
 class FileFormatError(Exception):
@@ -92,6 +95,10 @@ class AudioFile():
                 or self.fileformat == '.mp4' \
                 or self.fileformat == '.m4b':
             self.mp4info()
+        # wav
+        elif self.fileformat == '.wav':
+            self.convert()
+
         # ファイルが未存在、未対応フォーマットの場合
         else:
             # すべて初期化
@@ -368,6 +375,29 @@ class AudioFile():
         # bytesへ変換
         if artwork:
             self.artwork = bytes(artwork)
+
+    
+    def convert(self):
+        """wav変換
+        """
+        try:
+            with open('./config.json', 'r') as cf:
+                config = json.load(cf)
+        except:
+            pass
+
+
+        filename = self.filepath.split(".")[-2]
+        old_filepath = self.filepath
+        new_filepath = filename + '.' + config["format"]
+        
+        command = 'ffmpeg -i \"' + old_filepath + '\" ' + config["options"][config["format"]] + ' \"' + new_filepath +'\"'
+        a = subprocess.call(command, shell=True)
+        
+        if a == 0:
+            self.info(new_filepath)
+        else:
+            pass
 
 
     def output(self):
