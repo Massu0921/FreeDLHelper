@@ -1,0 +1,6 @@
+requests
+lxml
+regex
+mutagen
+wxpython
+pyperclip
