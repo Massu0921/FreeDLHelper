@@ -9,18 +9,18 @@ SoundCloudから楽曲情報・アートワーク画像を取得し、Free DLな
 macOSでの動作は確認していません
 
 ## インストールが必要なライブラリ
+次のコマンドでインストールしてください．  
+```
+pip3 install -r requirements.txt
+```
+
+以下のライブラリを使用しています．  
 - Requests https://2.python-requests.org/en/master/
-> `pip3 install requests`
 - lxml https://lxml.de/
-> `pip3 install lxml`
-- regex https://bitbucket.org/mrabarnett/mrab-regex/src/default/
-> `pip3 install regex`
+- regex https://pypi.org/project/regex/
 - mutagen https://github.com/quodlibet/mutagen
-> `pip3 install mutagen`
 - wxPython http://wxPython.org/
-> `pip3 install wxpython`
 - pyperclip https://github.com/asweigart/pyperclip
-> `pip3 install pyperclip`
 
 ## 使用方法
 1. 上記のライブラリをインストールし、`py main.py` を実行
