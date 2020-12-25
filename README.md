@@ -1,4 +1,4 @@
-# FreeDLHelper v1.4
+# FreeDLHelper v1.4.1
 SoundCloudから楽曲情報・アートワーク画像を取得し、Free DLなどした音声ファイルに不足情報を追加するツールです。
 
 <img src='Resources/fdh_window.png' alt='画面'>
@@ -72,7 +72,8 @@ pip3 install -r requirements.txt
 - 2020/09/22 v1.4
     - wav変換機能を追加
     - その他微調整
-
+- 2020/12/26 v1.4.1
+    - タグリストが取得できない不具合を修正
 ## 確認している問題・バグ
 - 一部の音声ファイルを読み込んだ際、曲情報が文字化けするものがある
 - 高DPIディスプレイで起動した際の画面ボケ \
