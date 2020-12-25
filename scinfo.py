@@ -91,7 +91,7 @@ class SoundCloudInfo():
 
         # タグリスト
         #tags = str(root.xpath('string(//script)')) # 取得不可
-        tags = trg_html.split('<script>!function')[1]
+        tags = trg_html.split('<script>!function')[-1]
         self.taglist = self.org_subtag(tags)
 
         # アップロード日時
