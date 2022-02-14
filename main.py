@@ -565,10 +565,12 @@ class ButtonPanel(wx.Panel):
                 self.cb_artist.SetValue(self.af.artist)
 
             if self.af.genre == '':
-                if self.sc.maintag == '':
+                if not self.sc.maintag == '':
+                    self.cb_genre.SetLabel(self.sc.maintag)
+                elif not self.sc.taglist == []:
                     self.cb_genre.SetLabel('選択してください')
                 else:
-                    self.cb_genre.SetLabel(self.sc.maintag)
+                    self.cb_genre.SetLabel('')
             else:
                 self.cb_genre.SetLabel(self.af.genre)
 
