@@ -544,7 +544,9 @@ class ButtonPanel(wx.Panel):
             titlelist = [self.af.title] + [self.sc.title]
             albumlist = [self.af.album]
             artistlist = [self.af.artist] + [self.sc.artist]
-            genrelist = [self.af.genre] + [self.sc.maintag] + self.sc.taglist
+            genrelist =  [self.af.genre] if not self.af.genre == '' else []
+            genrelist += [self.sc.maintag] if not self.sc.maintag == '' else []
+            genrelist += self.sc.taglist
 
             self.cb_title.SetItems(titlelist)
             self.cb_album.SetItems(albumlist)
