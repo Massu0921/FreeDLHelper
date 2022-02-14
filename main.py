@@ -552,7 +552,9 @@ class ButtonPanel(wx.Panel):
             titlelist = [self.af.title] + [self.sc.title]
             albumlist = [self.af.album]
             artistlist = [self.af.artist] + [self.sc.artist]
-            genrelist = [self.af.genre] + [self.sc.maintag] + self.sc.taglist
+            genrelist =  [self.af.genre] if not self.af.genre == '' else []
+            genrelist += [self.sc.maintag] if not self.sc.maintag == '' else []
+            genrelist += self.sc.taglist
 
             self.cb_title.SetItems(titlelist)
             self.cb_album.SetItems(albumlist)
@@ -573,10 +575,12 @@ class ButtonPanel(wx.Panel):
                 self.cb_artist.SetValue(self.af.artist)
 
             if self.af.genre == '':
-                if self.sc.maintag == '':
+                if not self.sc.maintag == '':
+                    self.cb_genre.SetLabel(self.sc.maintag)
+                elif not self.sc.taglist == []:
                     self.cb_genre.SetLabel('選択してください')
                 else:
-                    self.cb_genre.SetLabel(self.sc.maintag)
+                    self.cb_genre.SetLabel('')
             else:
                 self.cb_genre.SetLabel(self.af.genre)
 
