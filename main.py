@@ -362,8 +362,16 @@ class ArtworkPanel(wx.Panel):
             image = ResourcePath('Resources/dnd_file.jpg')
 
         img = wx.Image(image)
-        # サイズ・品質
-        newimg = img.Scale(self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
+
+        try:
+            # サイズ・品質
+            newimg = img.Scale(self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
+
+        except:
+            # 画像を読み込めなかった場合
+            image = ResourcePath('Resources/no_artwork.jpg')
+            img = wx.Image(image)
+            newimg = img.Scale(self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
 
         # 画像変更
         self.img_panel.SetBitmap(wx.Bitmap(newimg))
