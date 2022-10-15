@@ -540,6 +540,7 @@ class ButtonPanel(wx.Panel):
 
         # テキストボックスからURL取得
         url = self.tc_url.GetValue()
+        url = url.split('?')[0] # クエリパラメータを省略したURL
 
         # 情報取得
         try:
