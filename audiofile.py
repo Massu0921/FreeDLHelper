@@ -110,7 +110,7 @@ class AudioFile():
             self.mp4info()
         # wav
         elif self.fileformat == '.wav':
-            self.convert_to_wav(self.filepath)
+            self.convert_from_wav(self.filepath)
 
         # ファイルが未存在、未対応フォーマットの場合
         else:
@@ -388,7 +388,7 @@ class AudioFile():
         if artwork:
             self.artwork = bytes(artwork)
 
-    def convert_to_wav(self, filepath):
+    def convert_from_wav(self, filepath):
         """wav変換"""
 
         # ffmpeg存在確認
