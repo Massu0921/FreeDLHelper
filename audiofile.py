@@ -110,7 +110,7 @@ class AudioFile():
             self.mp4info()
         # wav
         elif self.fileformat == '.wav':
-            self.convert()
+            self.convert_to_wav(self.filepath)
 
         # ファイルが未存在、未対応フォーマットの場合
         else:
@@ -388,7 +388,7 @@ class AudioFile():
         if artwork:
             self.artwork = bytes(artwork)
 
-    def convert(self):
+    def convert_to_wav(self, filepath):
         """wav変換"""
 
         # ffmpeg存在確認
@@ -402,11 +402,13 @@ class AudioFile():
         except:
             raise JsonLoadError("jsonファイルを読み込めませんでした")
 
-        filename = os.path.splitext(os.path.basename(self.filepath))[0]
-        old_filepath = self.filepath
-        new_filepath = filename + '.' + config["format"]
+        # 拡張子を除くファイルパス
+        filepath_wo_ext = os.path.splitext(filepath)[0]
 
-        command = 'ffmpeg -y -i \"' + old_filepath + '\" ' + \
+        # 変換後のファイルパス
+        new_filepath = filepath_wo_ext + '.' + config["format"]
+
+        command = 'ffmpeg -y -i \"' + filepath + '\" ' + \
             config["options"][config["format"]] + ' \"' + new_filepath + '\"'
         a = subprocess.call(command, shell=True)
 
