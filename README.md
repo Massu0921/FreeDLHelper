@@ -50,7 +50,8 @@ pip install -r requirements.txt
     "options": {
         "mp3": "-vn -ac 2 -ar 44100 -ab 320k -acodec libmp3lame -f mp3",
         "flac": "-vn -ar 44100 -ac 2 -acodec flac -f flac",
-        "aac": "-vn -ac 2 -ar 44100 -ab 128k -acodec libfaac -f mp4"
+        "aac": "-vn -ac 2 -ar 44100 -ab 128k -acodec libfaac -f mp4",
+        "aiff": "-vn -ar 44100 -ac 2 -acodec pcm_s16be -f aiff"
     }
 }
 ```
