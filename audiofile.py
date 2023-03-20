@@ -402,7 +402,7 @@ class AudioFile():
         except:
             raise JsonLoadError("jsonファイルを読み込めませんでした")
 
-        filename = self.filepath.split(".")[-2]
+        filename = os.path.splitext(os.path.basename(self.filepath))[0]
         old_filepath = self.filepath
         new_filepath = filename + '.' + config["format"]
 
