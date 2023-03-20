@@ -7,8 +7,13 @@ SoundCloudから楽曲情報・アートワーク画像を取得し、Free DLな
 [こちら](https://github.com/Massu0921/FreeDLHelper/releases)からダウンロードできます。  
 Windowsのみのリリースですm(__)m
 
+### FFmpeg
+[FFmpeg](https://ffmpeg.org/download.html#build-windows)をインストールすることで、楽曲情報書き込み時に`.wav`形式の音声ファイルを`.mp3`などの任意のフォーマットに変換することができます。  
+フォーマットの指定は同梱されている`config.json`で行います。
+指定方法は同梱されている`Readme.txt`もしくは[こちら](#configjson)を参考にしてください。
+
 ---
-以下開発者向け
+以下開発者向けです。
 ## 環境
 - Windows 10 / 11 Python 3.10.10  
 macOSでの動作は確認していません
@@ -16,7 +21,7 @@ macOSでの動作は確認していません
 ## インストールが必要なライブラリ
 次のコマンドでインストールしてください．  
 ```
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 以下のライブラリを使用しています．  
@@ -28,7 +33,7 @@ pip3 install -r requirements.txt
 - pyperclip https://github.com/asweigart/pyperclip
 
 ## 使用方法
-1. 上記のライブラリをインストールし、`py main.py` を実行
+1. 上記のライブラリをインストールし、`python main.py` を実行
 2. 曲情報を追加したい音声ファイルを、選択ダイアログまたはドラッグ&ドロップで選択
 3. SoundCloudの対象曲のURLを貼り付け、"情報取得"を押して曲情報を取得
 4. 取得した曲情報を確認・編集し、"書き込み"を押して音声ファイルに曲情報を書き込む
@@ -45,7 +50,8 @@ pip3 install -r requirements.txt
     "options": {
         "mp3": "-vn -ac 2 -ar 44100 -ab 320k -acodec libmp3lame -f mp3",
         "flac": "-vn -ar 44100 -ac 2 -acodec flac -f flac",
-        "aac": "-vn -ac 2 -ar 44100 -ab 128k -acodec libfaac -f mp4"
+        "aac": "-vn -ac 2 -ar 44100 -ab 128k -acodec libfaac -f mp4",
+        "aiff": "-vn -ar 44100 -ac 2 -acodec pcm_s16be -f aiff"
     }
 }
 ```
