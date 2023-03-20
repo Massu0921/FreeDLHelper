@@ -404,7 +404,7 @@ class AudioFile():
 
         filename = os.path.splitext(os.path.basename(self.filepath))[0]
         old_filepath = self.filepath
-        new_filepath = filename + '.' + config["format"]
+        new_filepath =  os.path.dirname(self.filepath) + '\\' + filename + '.' + config["format"]
 
         command = 'ffmpeg -y -i \"' + old_filepath + '\" ' + \
             config["options"][config["format"]] + ' \"' + new_filepath + '\"'
