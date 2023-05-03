@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
 # coding: utf-8
-import requests,os,regex
+import requests
+import os
+import regex
 import lxml.html
 
 # Exceptions
+
+
 class NotSoundCloudURL(Exception):
     """
     SoundCloud以外のURLが入力された場合に発生するエラー
     """
     pass
 
+
 class NotTrackURL(Exception):
     """
     曲以外のURLで処理が進んだ際に発生するエラー
     """
     pass
+
 
 class OfflineError(Exception):
     """
@@ -84,13 +90,15 @@ class SoundCloudInfo():
         self.title = str(root.xpath('string(//img/@alt)'))
 
         # アーティスト名
-        self.artist = str(root.xpath('string(//div[@itemprop="byArtist"]/meta/@content)'))
+        self.artist = str(root.xpath(
+            'string(//div[@itemprop="byArtist"]/meta/@content)'))
 
         # メインタグ
-        self.maintag = str(root.xpath('string(//noscript[2]//dd//@href)').replace('/tags/',''))
+        self.maintag = str(root.xpath(
+            'string(//noscript[2]//dd//@href)').replace('/tags/', ''))
 
         # タグリスト
-        #tags = str(root.xpath('string(//script)')) # 取得不可
+        # tags = str(root.xpath('string(//script)')) # 取得不可
         tags = trg_html.split('<script>!function')[-1]
         self.taglist = self.org_subtag(tags)
 
@@ -99,15 +107,17 @@ class SoundCloudInfo():
         self.uploaded = str(uploaded[0:10])
 
         # 概要欄
-        self.overview = str(root.xpath('string(//meta[@property="og:description"]/@content)'))
+        self.overview = str(root.xpath(
+            'string(//meta[@property="og:description"]/@content)'))
 
         # アートワークURL
-        self.artwork_url = str(root.xpath('normalize-space(//meta[@property="og:image"]/@content)'))
+        self.artwork_url = str(root.xpath(
+            'normalize-space(//meta[@property="og:image"]/@content)'))
 
-    def org_subtag(self,tags):
+    def org_subtag(self, tags):
         """
         タグリストの整理
-        
+
         Parameters
         ----------
         tags : str
@@ -127,10 +137,10 @@ class SoundCloudInfo():
         # タグ(str)からスペース入りタグを除去
         for i in range(len(space_taglist)):
             tags = tags.replace(space_taglist[i], '')
-            
+
             # スペース入りタグの'\','#' を除去
             space_taglist[i] = space_taglist[i].strip('\\"')
-            
+
         # タグを仕分ける(list化)
         taglist = tags.split(' ')
 
@@ -147,11 +157,12 @@ class SoundCloudInfo():
             # エスケープ文字列を通常の文字列で置き換え
             for j in range(len(escape_str)):
                 # 一旦encode -> decode
-                escape_str_dec = escape_str[j].encode().decode('unicode-escape')
-                new_taglist[i] = new_taglist[i].replace(escape_str[j], escape_str_dec)
-                
-        return new_taglist
+                escape_str_dec = escape_str[j].encode().decode(
+                    'unicode-escape')
+                new_taglist[i] = new_taglist[i].replace(
+                    escape_str[j], escape_str_dec)
 
+        return new_taglist
 
     def output(self):
         """ テスト出力用 """
@@ -162,6 +173,7 @@ class SoundCloudInfo():
         print("アップロード日時：{}".format(self.uploaded))
         print("アートワーク：　　{}".format(self.artwork_url))
         print("概要：\n{}".format(self.overview))
+
 
 if __name__ == '__main__':
     scinfo = SoundCloudInfo()

@@ -17,9 +17,11 @@ class URLOpenError(Exception):
     """ URLを開けなかった場合に発生するエラー """
     pass
 
+
 class FFmpegNotFoundError(Exception):
     """ FFmpeg非存在時のエラー """
     pass
+
 
 class JsonLoadError(Exception):
     """ jsonファイル読み込み時のエラー """
@@ -67,7 +69,7 @@ class AudioFile():
         self.title = ''
         self.album = ''
         self.artist = ''
-        #self.albumartist = ''
+        # self.albumartist = ''
         self.genre = ''
         self.comment = ''
         self.artwork_url = ''
@@ -121,7 +123,7 @@ class AudioFile():
             self.title = ''
             self.album = ''
             self.artist = ''
-            #self.albumartist = ''
+            # self.albumartist = ''
             self.genre = ''
             self.comment = ''
             self.artwork_url = ''
@@ -199,7 +201,7 @@ class AudioFile():
         self.title = str(self.tags.get('TIT2', ''))
         self.album = str(self.tags.get('TALB', ''))
         self.artist = str(self.tags.get('TPE1', ''))
-        #self.albumartist = str(self.tags.get('TPE2',''))
+        # self.albumartist = str(self.tags.get('TPE2',''))
         self.genre = str(self.tags.get('TCON', ''))
 
         # コメント取得
@@ -260,7 +262,7 @@ class AudioFile():
             self.title = ''
             self.album = ''
             self.artist = ''
-            #self.albumartist = ''
+            # self.albumartist = ''
             self.genre = ''
             self.comment = ''
             self.artwork_url = ''
@@ -276,7 +278,7 @@ class AudioFile():
         self.tags['TALB'] = id3.TALB(encoding=1, text=self.album)
         self.tags['TPE1'] = id3.TPE1(encoding=1, text=self.artist)
         self.tags['TCON'] = id3.TCON(encoding=1, text=self.genre)
-        #self.tags['TPE2'] = TPE2(encoding=1, text=self.albumartist)
+        # self.tags['TPE2'] = TPE2(encoding=1, text=self.albumartist)
 
         self.tags.delall('COMM')
         self.tags['COMM'] = id3.COMM(encoding=1, lang='eng', text=self.comment)
@@ -423,7 +425,7 @@ class AudioFile():
         print("タイトル　　　　　　　: {}".format(self.title))
         print("アルバム名　　　　　　: {}".format(self.album))
         print("アーティスト　　　　　: {}".format(self.artist))
-        #print("アルバムのアーティスト: {}".format(self.albumartist))
+        # print("アルバムのアーティスト: {}".format(self.albumartist))
         print("ジャンル　　　　　　　: {}".format(self.genre))
         print("コメント　　　　　　　: \n{}".format(self.comment))
 

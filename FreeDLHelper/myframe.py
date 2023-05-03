@@ -6,20 +6,24 @@ import os
 import sys
 import io
 import pyperclip
-import audiofile
-import scinfo
+from . import audiofile, scinfo
 from urllib.request import urlopen
+
+
+IMAGE_PATH = 'FreeDLHelper/assets/img/'
+ICON_PATH = 'FreeDLHelper/assets/icon/'
 
 # リソースアクセス用
 def ResourcePath(filename):
-  if hasattr(sys, "_MEIPASS"):
-      return os.path.join(sys._MEIPASS, filename)
-  return os.path.join(filename)
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, filename)
+    return os.path.join(filename)
 
 
 class MyFrame(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, None, title="FreeDLHelper v1.4.3", size=(900, 550))
+        wx.Frame.__init__(
+            self, None, title="FreeDLHelper v1.4.3", size=(900, 550))
 
         # ** ステータスバー **
         self.CreateStatusBar()
@@ -27,8 +31,9 @@ class MyFrame(wx.Frame):
         self.GetStatusBar().SetBackgroundColour(None)
 
         # ** アイコン **
-        #tbi = wx.adv.TaskBarIcon()
-        icon = wx.Icon(ResourcePath('Resources/fdh_v2.ico'), wx.BITMAP_TYPE_ICO)
+        # tbi = wx.adv.TaskBarIcon()
+        icon = wx.Icon(ResourcePath(ICON_PATH + 'fdh_v1-2.ico'),
+                       wx.BITMAP_TYPE_ICO)
         self.SetIcon(icon)
 
         # scinfo, audiofileのインスタンス作成
@@ -51,10 +56,14 @@ class MyFrame(wx.Frame):
 
         root_layout = wx.GridBagSizer()
         root_layout.Add(self.aw_panel, (0, 0), (2, 1), flag=wx.ALL, border=10)
-        root_layout.Add(self.fr_panel, (0, 1), (1, 1), flag=wx.EXPAND | wx.ALL, border=10)
-        root_layout.Add(self.ai_panel, (1, 1), (1, 1), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
-        root_layout.Add(self.url_panel, (2, 0), (1, 2), flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
-        root_layout.Add(self.bt_panel, (3, 0), (1, 2), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
+        root_layout.Add(self.fr_panel, (0, 1), (1, 1),
+                        flag=wx.EXPAND | wx.ALL, border=10)
+        root_layout.Add(self.ai_panel, (1, 1), (1, 1), flag=wx.EXPAND |
+                        wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
+        root_layout.Add(self.url_panel, (2, 0), (1, 2), flag=wx.EXPAND |
+                        wx.LEFT | wx.RIGHT | wx.BOTTOM, border=10)
+        root_layout.Add(self.bt_panel, (3, 0), (1, 2),
+                        flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
         root_layout.AddGrowableCol(1)
 
         root_panel.SetSizer(root_layout)
@@ -161,10 +170,12 @@ class FileRefPanel(wx.Panel):
 
             except audiofile.FFmpegNotFoundError:
                 wx.MessageBox('ffmpegが見つかりませんでした', '変換エラー', wx.ICON_ERROR)
-                self.GetTopLevelParent().SetStatusText('変換エラーです。ffmpegを本アプリと同じディレクトリにインストールしてください')
+                self.GetTopLevelParent().SetStatusText(
+                    '変換エラーです。ffmpegを本アプリと同じディレクトリにインストールしてください')
 
             except audiofile.JsonLoadError:
-                wx.MessageBox('config.jsonの読み込みに失敗しました', '読み込みエラー', wx.ICON_ERROR)
+                wx.MessageBox('config.jsonの読み込みに失敗しました',
+                              '読み込みエラー', wx.ICON_ERROR)
                 self.GetTopLevelParent().SetStatusText('読み込みエラーです。config.jsonを確認してください')
 
             except audiofile.CommandFailedError:
@@ -178,10 +189,9 @@ class FileRefPanel(wx.Panel):
                 self.cb_genre.SetItems(genrelist)
                 self.cb_genre.SetValue('選択してください')
 
-
             # テキストボックスにパス設定
             self.tc_file.SetValue(self.af.filepath)
-            
+
             # ジャンル以外のドロップダウンリストを更新
             titlelist = [self.af.title]
             albumlist = [self.af.album]
@@ -268,7 +278,8 @@ class MyFileDropTarget(wx.FileDropTarget):
 
         except audiofile.FFmpegNotFoundError:
             wx.MessageBox('ffmpegが見つかりませんでした', '変換エラー', wx.ICON_ERROR)
-            self.parent.GetTopLevelParent().SetStatusText('変換エラーです。ffmpegを本アプリと同じディレクトリにインストールしてください')
+            self.parent.GetTopLevelParent().SetStatusText(
+                '変換エラーです。ffmpegを本アプリと同じディレクトリにインストールしてください')
 
         except audiofile.JsonLoadError:
             wx.MessageBox('config.jsonの読み込みに失敗しました', '読み込みエラー', wx.ICON_ERROR)
@@ -276,7 +287,8 @@ class MyFileDropTarget(wx.FileDropTarget):
 
         except audiofile.CommandFailedError:
             wx.MessageBox('ffmpegのコマンド実行に失敗しました', '変換エラー', wx.ICON_ERROR)
-            self.parent.GetTopLevelParent().SetStatusText('変換エラーです。config.json内の設定を確認してください')
+            self.parent.GetTopLevelParent().SetStatusText(
+                '変換エラーです。config.json内の設定を確認してください')
 
             # アートワークを初期状態に
             self.set_img()
@@ -316,11 +328,12 @@ class ArtworkPanel(wx.Panel):
         super().__init__(parent)
         self.imgsize = imgsize
 
-        image = ResourcePath('Resources/dnd_file.jpg')
+        image = ResourcePath(IMAGE_PATH + 'dnd_file.jpg')
         img = wx.Image(image)
 
         # サイズ・品質
-        newimg = img.Scale(self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
+        newimg = img.Scale(
+            self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
         self.img_panel = wx.StaticBitmap(self, -1, wx.Bitmap(newimg))
 
         # タイトル付きBoxSizer
@@ -355,23 +368,25 @@ class ArtworkPanel(wx.Panel):
 
         # 画像がない(None)場合
         elif img_data == None:
-            image = ResourcePath('Resources/no_artwork.jpg')
+            image = ResourcePath(IMAGE_PATH + 'no_artwork.jpg')
 
         # 引数なし
         elif img_data == -1:
-            image = ResourcePath('Resources/dnd_file.jpg')
+            image = ResourcePath(IMAGE_PATH + 'dnd_file.jpg')
 
         img = wx.Image(image)
 
         try:
             # サイズ・品質
-            newimg = img.Scale(self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
+            newimg = img.Scale(
+                self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
 
         except:
             # 画像を読み込めなかった場合
-            image = ResourcePath('Resources/no_artwork.jpg')
+            image = ResourcePath(IMAGE_PATH + 'no_artwork.jpg')
             img = wx.Image(image)
-            newimg = img.Scale(self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
+            newimg = img.Scale(
+                self.imgsize[0], self.imgsize[1], wx.IMAGE_QUALITY_HIGH)
 
         # 画像変更
         self.img_panel.SetBitmap(wx.Bitmap(newimg))
@@ -402,16 +417,20 @@ class AudioInfoPanel(wx.Panel):
 
         # ** 各項目 **
         st_title = wx.StaticText(self, -1, 'タイトル: ')
-        self.cb_title = wx.ComboBox(self, -1, choices=[''], style=wx.CB_DROPDOWN)
+        self.cb_title = wx.ComboBox(
+            self, -1, choices=[''], style=wx.CB_DROPDOWN)
 
         st_album = wx.StaticText(self, -1, 'アルバム名: ')
-        self.cb_album = wx.ComboBox(self, -1, choices=[''], style=wx.CB_DROPDOWN)
+        self.cb_album = wx.ComboBox(
+            self, -1, choices=[''], style=wx.CB_DROPDOWN)
 
         st_artist = wx.StaticText(self, -1, 'アーティスト名: ')
-        self.cb_artist = wx.ComboBox(self, -1, choices=[''], style=wx.CB_DROPDOWN)
+        self.cb_artist = wx.ComboBox(
+            self, -1, choices=[''], style=wx.CB_DROPDOWN)
 
         st_genre = wx.StaticText(self, -1, 'ジャンル: ')
-        self.cb_genre = wx.ComboBox(self, -1, '選択してください', choices=[''], style=wx.CB_DROPDOWN)
+        self.cb_genre = wx.ComboBox(
+            self, -1, '選択してください', choices=[''], style=wx.CB_DROPDOWN)
 
         st_comment = wx.StaticText(self, -1, 'コメント: ')
         self.tc_comment = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE)
@@ -476,7 +495,7 @@ class URLTextPanel(wx.Panel):
         layout = wx.StaticBoxSizer(s_box, wx.HORIZONTAL)
         layout.Add(grid, 1)
         self.SetSizer(layout)
-    
+
     def click_bt_url_paste(self, event):
         self.tc_url.SetValue(pyperclip.paste())
 
@@ -540,7 +559,7 @@ class ButtonPanel(wx.Panel):
 
         # テキストボックスからURL取得
         url = self.tc_url.GetValue()
-        url = url.split('?')[0] # クエリパラメータを省略したURL
+        url = url.split('?')[0]  # クエリパラメータを省略したURL
 
         # 情報取得
         try:
@@ -553,7 +572,7 @@ class ButtonPanel(wx.Panel):
             titlelist = [self.af.title] + [self.sc.title]
             albumlist = [self.af.album]
             artistlist = [self.af.artist] + [self.sc.artist]
-            genrelist =  [self.af.genre] if not self.af.genre == '' else []
+            genrelist = [self.af.genre] if not self.af.genre == '' else []
             genrelist += [self.sc.maintag] if not self.sc.maintag == '' else []
             genrelist += self.sc.taglist
 
@@ -567,7 +586,7 @@ class ButtonPanel(wx.Panel):
                 self.cb_title.SetValue(self.sc.title)
             else:
                 self.cb_title.SetValue(self.af.title)
-            
+
             self.cb_album.SetValue(self.af.album)
 
             if self.af.artist == '':
@@ -632,23 +651,17 @@ class ButtonPanel(wx.Panel):
             self.af.edit()
             wx.MessageBox('書き込みが完了しました', '書き込み完了', wx.OK)
             self.GetTopLevelParent().SetStatusText('書き込み完了')
-        
+
         except FileNotFoundError:
-            wx.MessageBox('ファイルが見つからないため、曲情報の書き込みができませんでした', 
-                        '書き込みエラー', wx.ICON_ERROR)
+            wx.MessageBox('ファイルが見つからないため、曲情報の書き込みができませんでした',
+                          '書き込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました: ファイルが見つかりません')
 
         except audiofile.URLOpenError:
             wx.MessageBox('オフラインか、その他の理由で画像の書き込みができませんでした',
-                        '書き込みエラー', wx.ICON_ERROR)
+                          '書き込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました: オンラインになっているか確認してください')
 
         except:
             wx.MessageBox('曲情報の書き込みができませんでした', '書き込みエラー', wx.ICON_ERROR)
             self.GetTopLevelParent().SetStatusText('書き込みエラーが発生しました')
-
-
-if __name__ == '__main__':
-    app = wx.App()
-    frame = MyFrame()
-    app.MainLoop()
