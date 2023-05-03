@@ -1,7 +1,7 @@
-# FreeDLHelper v1.4.3
+# FreeDLHelper v2.0.0
 SoundCloudから楽曲情報・アートワーク画像を取得し、Free DLなどした音声ファイルに不足情報を追加するツールです。
 
-<img src='Resources/fdh_window.png' alt='画面'>
+<img src='doc_resources/fdh_window.png' alt='画面'>
 
 ## アプリのダウンロード
 [こちら](https://github.com/Massu0921/FreeDLHelper/releases)からダウンロードできます。  
@@ -33,7 +33,7 @@ pip install -r requirements.txt
 - pyperclip https://github.com/asweigart/pyperclip
 
 ## 使用方法
-1. 上記のライブラリをインストールし、`python main.py` を実行
+1. 上記のライブラリをインストールし、`python -m FreeDLHelper` を実行
 2. 曲情報を追加したい音声ファイルを、選択ダイアログまたはドラッグ&ドロップで選択
 3. SoundCloudの対象曲のURLを貼り付け、"情報取得"を押して曲情報を取得
 4. 取得した曲情報を確認・編集し、"書き込み"を押して音声ファイルに曲情報を書き込む
