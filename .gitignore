@@ -6,3 +6,6 @@ build
 dist
 FreeDLHelper.spec
 property.txt
+
+# test
+testfiles
