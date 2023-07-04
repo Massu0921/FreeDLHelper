@@ -1,0 +1,14 @@
+# pycache
+__pycache__
+
+# pyinstaller
+build
+dist
+*.spec
+property.txt
+
+# assets
+*.xcf
+
+# test
+testfiles
