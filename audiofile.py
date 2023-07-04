@@ -30,6 +30,10 @@ class CommandFailedError(Exception):
     """ コマンド実行失敗時のエラー """
     pass
 
+class FileAlreadyExistsError(Exception):
+    """ 出力先にファイルが既に存在する時のエラー """
+    pass
+
 
 class AudioFile():
     """
@@ -110,7 +114,7 @@ class AudioFile():
             self.mp4info()
         # wav
         elif self.fileformat == '.wav':
-            self.convert_to_wav(self.filepath)
+            self.convert_from_wav(self.filepath)
 
         # ファイルが未存在、未対応フォーマットの場合
         else:
@@ -388,7 +392,7 @@ class AudioFile():
         if artwork:
             self.artwork = bytes(artwork)
 
-    def convert_to_wav(self, filepath):
+    def convert_from_wav(self, filepath):
         """wav変換"""
 
         # ffmpeg存在確認
@@ -407,6 +411,10 @@ class AudioFile():
 
         # 変換後のファイルパス
         new_filepath = filepath_wo_ext + '.' + config["format"]
+
+        # 変換後のファイルパスが出力先に含まれていたら警告を表示して操作を行わない
+        if os.path.exists(new_filepath):
+            raise FileAlreadyExistsError("変換後のファイルが既に存在します")
 
         command = 'ffmpeg -y -i \"' + filepath + '\" ' + \
             config["options"][config["format"]] + ' \"' + new_filepath + '\"'

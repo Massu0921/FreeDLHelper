@@ -274,6 +274,10 @@ class MyFileDropTarget(wx.FileDropTarget):
             wx.MessageBox('config.jsonの読み込みに失敗しました', '読み込みエラー', wx.ICON_ERROR)
             self.parent.GetTopLevelParent().SetStatusText('読み込みエラーです。config.jsonを確認してください')
 
+        except audiofile.FileAlreadyExistsError:
+            wx.MessageBox('出力先ディレクトリに変換後のファイルが存在します', '変換エラー', wx.ICON_WARNING)
+            self.parent.GetTopLevelParent().SetStatusText('変換エラーです。変換する場合は変換後のファイルをディレクトリから削除してください')
+
         except audiofile.CommandFailedError:
             wx.MessageBox('ffmpegのコマンド実行に失敗しました', '変換エラー', wx.ICON_ERROR)
             self.parent.GetTopLevelParent().SetStatusText('変換エラーです。config.json内の設定を確認してください')

@@ -1,4 +1,4 @@
-# FreeDLHelper v1.4.3
+# FreeDLHelper
 SoundCloudから楽曲情報・アートワーク画像を取得し、Free DLなどした音声ファイルに不足情報を追加するツールです。
 
 <img src='Resources/fdh_window.png' alt='画面'>
